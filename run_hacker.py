@@ -18,14 +18,18 @@ async def get_users(db):
   for doc in docs:
     click.echo(doc)
 
+#Appears to be sending the password for the DB here
+#Using click package
 @click.group()
 def cli():
     pass
 
 @cli.command()
 def list():
+    #Connecting to the database using the HOST Details and Name
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
     asyncio.run(get_users(db))
 
+#Call the cli function here
 if __name__ == '__main__':
     cli()
