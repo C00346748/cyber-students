@@ -24,6 +24,7 @@ class LoginHandlerTest(BaseTest):
     def setUp(self):
         super().setUp()
 
+        #This is raw text would need to change
         self.email = 'test@test.com'
         self.password = 'testPassword'
 
@@ -39,6 +40,8 @@ class LoginHandlerTest(BaseTest):
         self.assertEqual(200, response.code)
 
         body_2 = json_decode(response.body)
+
+        #Raw tokens
         self.assertIsNotNone(body_2['token'])
         self.assertIsNotNone(body_2['expiresIn'])
 

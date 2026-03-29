@@ -12,6 +12,7 @@ from .handlers.user import UserHandler
 
 class Application(Application):
 
+    #Starts the App
     def __init__(self):
         handlers = [
             (r'/students/?', WelcomeHandler),
@@ -26,6 +27,7 @@ class Application(Application):
 
         super(Application, self).__init__(handlers, **settings)
 
+        #Looks like its connecting and sending the host and db name to connect
         self.db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 
         self.executor = ThreadPoolExecutor(WORKERS)
