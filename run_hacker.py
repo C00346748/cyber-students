@@ -5,6 +5,7 @@ from motor.motor_tornado import MotorClient
 
 from api.conf import MONGODB_HOST, MONGODB_DBNAME
 
+#Queries mongo for info
 async def get_users(db):
   cur = db.users.find({}, {
     'email': 1,
