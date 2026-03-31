@@ -2,6 +2,9 @@ from json import dumps
 from tornado.escape import json_decode
 from tornado.ioloop import IOLoop
 from tornado.web import Application
+from .conf import SERVICE_NAME
+
+import keyring
 
 from .base import BaseTest
 
@@ -25,8 +28,9 @@ class LoginHandlerTest(BaseTest):
         super().setUp()
 
         #This is raw text would need to change
+        #Trial 1: Going to replace this with key ring password, no token yet
         self.email = 'test@test.com'
-        self.password = 'testPassword'
+        self.password = keyring.get_password(SERVICE_NAME,self.email)
 
         IOLoop.current().run_sync(self.register)
 
