@@ -28,6 +28,10 @@ class Application(Application):
         super(Application, self).__init__(handlers, **settings)
 
         #Looks like its connecting and sending the host and db name to connect
+        # MONGODB_HOST is unpacked dictionary with 'host' = 'localhost' and 'port': 27017
+        # and MONGODB_NAME 'cyberStudents'
+        # This info is read from conf.py
+        # Motor client is imported from motor.motor_tornado
         self.db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 
         self.executor = ThreadPoolExecutor(WORKERS)

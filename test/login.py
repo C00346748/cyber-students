@@ -31,6 +31,7 @@ class LoginHandlerTest(BaseTest):
         IOLoop.current().run_sync(self.register)
 
     def test_login(self):
+        #This uses raw text
         body = {
           'email': self.email,
           'password': self.password
@@ -41,11 +42,12 @@ class LoginHandlerTest(BaseTest):
 
         body_2 = json_decode(response.body)
 
-        #Raw tokens
+        #Raw tokens but only checks it not empty
         self.assertIsNotNone(body_2['token'])
         self.assertIsNotNone(body_2['expiresIn'])
 
     def test_login_case_insensitive(self):
+        #This uses raw data
         body = {
           'email': self.email.swapcase(),
           'password': self.password
@@ -55,10 +57,13 @@ class LoginHandlerTest(BaseTest):
         self.assertEqual(200, response.code)
 
         body_2 = json_decode(response.body)
+
+        #Raw tokens but only checks it not empty
         self.assertIsNotNone(body_2['token'])
         self.assertIsNotNone(body_2['expiresIn'])
 
     def test_login_wrong_email(self):
+        #This uses raw data
         body = {
           'email': 'wrongUsername',
           'password': self.password
@@ -68,6 +73,7 @@ class LoginHandlerTest(BaseTest):
         self.assertEqual(403, response.code)
 
     def test_login_wrong_password(self):
+        #This uses raw data
         body = {
           'email': self.email,
           'password': 'wrongPassword'
