@@ -2,6 +2,9 @@ from json import dumps
 from tornado.escape import json_decode
 from tornado.ioloop import IOLoop
 from tornado.web import Application
+from .conf import SERVICE_NAME
+
+import keyring
 
 from api.handlers.registration import RegistrationHandler
 
@@ -19,10 +22,10 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration(self):
         email = 'test@test.com'
         display_name = 'testDisplayName'
-
+        #body dictionary replacing with keyring
         body = {
           'email': email,
-          'password': 'testPassword',
+          'password': keyring.get_password(SERVICE_NAME,email),
           'displayName': display_name
         }
 
