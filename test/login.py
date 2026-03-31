@@ -29,6 +29,7 @@ class LoginHandlerTest(BaseTest):
 
         #This is raw text would need to change
         #Trial 1: Going to replace this with key ring password, no token yet
+        #The test still passed using keyring
         self.email = 'test@test.com'
         self.password = keyring.get_password(SERVICE_NAME,self.email)
 
