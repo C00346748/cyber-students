@@ -22,7 +22,7 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration(self):
         email = 'test@test.com'
         display_name = 'testDisplayName'
-        #body dictionary replacing with keyring
+        #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
           'password': keyring.get_password(SERVICE_NAME,email),
@@ -38,10 +38,10 @@ class RegistrationHandlerTest(BaseTest):
 
     def test_registration_without_display_name(self):
         email = 'test@test.com'
-
+        #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
-          'password': 'testPassword'
+          'password': keyring.get_password(SERVICE_NAME,email)
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
@@ -52,9 +52,10 @@ class RegistrationHandlerTest(BaseTest):
         self.assertEqual(email, body_2['displayName'])
 
     def test_registration_twice(self):
+        #body dictionary replacing password retrieval with keyring
         body = {
           'email': 'test@test.com',
-          'password': 'testPassword',
+          'password': keyring.get_password(SERVICE_NAME,'test@test.com'),
           'displayName': 'testDisplayName'
         }
 
