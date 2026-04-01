@@ -3,6 +3,7 @@ import click
 from json import loads
 from motor.motor_tornado import MotorClient
 
+#The configure file has the login details
 from api.conf import MONGODB_HOST, MONGODB_DBNAME
 
 #Queries mongo for info
@@ -19,8 +20,7 @@ async def get_users(db):
   for doc in docs:
     click.echo(doc)
 
-#Appears to be sending the password for the DB here
-#Using click package
+#This is just passing when tested, not really implementing anything
 @click.group()
 def cli():
     pass
@@ -28,9 +28,10 @@ def cli():
 @cli.command()
 def list():
     #Connecting to the database using the HOST Details and Name
+    #The DB now requires authentication but it has access to .conf
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
     asyncio.run(get_users(db))
 
-#Call the cli function here
+#Confifure to run as script
 if __name__ == '__main__':
     cli()

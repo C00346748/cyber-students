@@ -12,8 +12,10 @@ from api.handlers.logout import LogoutHandler
 
 from .base import BaseTest
 
+#Logs in to the webserver and then logs out
 class LogoutHandlerTest(BaseTest):
 
+    #Runs the logout to the webserver
     @classmethod
     def setUpClass(self):
         self.my_app = Application([(r'/logout', LogoutHandler)])
@@ -35,7 +37,7 @@ class LogoutHandlerTest(BaseTest):
 
     def setUp(self):
         super().setUp()
-        #Use of raw password
+        #Use of raw password replaced with keyring
         self.email = 'test@test.com'
         self.password = keyring.get_password(SERVICE_NAME,self.email)
         self.token = 'testToken'
@@ -43,6 +45,7 @@ class LogoutHandlerTest(BaseTest):
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
 
+    #logs out of the webserver
     def test_logout(self):
         headers = HTTPHeaders({'X-Token': self.token})
         body = {}
@@ -50,12 +53,14 @@ class LogoutHandlerTest(BaseTest):
         response = self.fetch('/logout', headers=headers, method='POST', body=dumps(body))
         self.assertEqual(200, response.code)
 
+    #Try to logout without correct credentials (token), expects fail
     def test_logout_without_token(self):
         body = {}
 
         response = self.fetch('/logout', method='POST', body=dumps(body))
         self.assertEqual(400, response.code)
 
+    #Try to logout without any credentials (token), expects fail
     def test_logout_wrong_token(self):
         headers = HTTPHeaders({'X-Token': 'wrongToken'})
         body = {}
@@ -63,6 +68,7 @@ class LogoutHandlerTest(BaseTest):
         response = self.fetch('/logout', method='POST', body=dumps(body))
         self.assertEqual(400, response.code)
 
+    #Double logout, only should work once, second attempt fails
     def test_logout_twice(self):
         headers = HTTPHeaders({'X-Token': self.token})
         body = {}

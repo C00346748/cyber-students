@@ -12,13 +12,16 @@ from .base import BaseTest
 
 import urllib.parse
 
+#Test the registration with the webserver
 class RegistrationHandlerTest(BaseTest):
 
+    #Sets registration function to my_app, add reg handler
     @classmethod
     def setUpClass(self):
         self.my_app = Application([(r'/registration', RegistrationHandler)])
         super().setUpClass()
 
+    #Sends reg request to webserver
     def test_registration(self):
         email = 'test@test.com'
         display_name = 'testDisplayName'
@@ -36,6 +39,7 @@ class RegistrationHandlerTest(BaseTest):
         self.assertEqual(email, body_2['email'])
         self.assertEqual(display_name, body_2['displayName'])
 
+    #Sends reg request without display name which is fine
     def test_registration_without_display_name(self):
         email = 'test@test.com'
         #body dictionary replacing password retrieval with keyring
@@ -51,6 +55,7 @@ class RegistrationHandlerTest(BaseTest):
         self.assertEqual(email, body_2['email'])
         self.assertEqual(email, body_2['displayName'])
 
+    #Double reg, should pass first attempt and fail second attempt to reg same user
     def test_registration_twice(self):
         #body dictionary replacing password retrieval with keyring
         body = {
