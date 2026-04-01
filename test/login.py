@@ -10,6 +10,7 @@ from .base import BaseTest
 
 from api.handlers.login import LoginHandler
 
+#This class looks like it sends POST requests to the websever to login
 class LoginHandlerTest(BaseTest):
 
     @classmethod
@@ -35,8 +36,9 @@ class LoginHandlerTest(BaseTest):
 
         IOLoop.current().run_sync(self.register)
 
+    #Testing the login to the webserver with e-mail and password
     def test_login(self):
-        #This uses raw text
+        #This uses raw text but fixed by setting in setup using keyring
         body = {
           'email': self.email,
           'password': self.password
@@ -51,6 +53,7 @@ class LoginHandlerTest(BaseTest):
         self.assertIsNotNone(body_2['token'])
         self.assertIsNotNone(body_2['expiresIn'])
 
+    #Testing login with case insensitve
     def test_login_case_insensitive(self):
         #This uses raw data
         body = {
@@ -63,10 +66,11 @@ class LoginHandlerTest(BaseTest):
 
         body_2 = json_decode(response.body)
 
-        #Raw tokens but only checks it not empty
+        #Raw tokens but only checks it's not empty
         self.assertIsNotNone(body_2['token'])
         self.assertIsNotNone(body_2['expiresIn'])
 
+    #Deliberately sending a wrong e-mail, expects fail 403
     def test_login_wrong_email(self):
         #This uses raw data
         body = {
@@ -75,13 +79,15 @@ class LoginHandlerTest(BaseTest):
         }
 
         response = self.fetch('/login', method='POST', body=dumps(body))
+        print(f"URL + {response.effective_url}") #should output URL of webserver
         self.assertEqual(403, response.code)
 
+    #Deliberately sending a wrong password, expects fail 403
     def test_login_wrong_password(self):
         #This uses raw data
         body = {
           'email': self.email,
-          'password': 'wrongPassword'
+          'password': 'wrongPassword' #Not masked because deliberately wrong
         }
 
         response = self.fetch('/login', method='POST', body=dumps(body))

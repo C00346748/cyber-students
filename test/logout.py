@@ -3,6 +3,10 @@ from tornado.escape import json_decode
 from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 from tornado.web import Application
+from .conf import SERVICE_NAME
+
+import keyring
+
 
 from api.handlers.logout import LogoutHandler
 
@@ -31,9 +35,9 @@ class LogoutHandlerTest(BaseTest):
 
     def setUp(self):
         super().setUp()
-
+        #Use of raw password
         self.email = 'test@test.com'
-        self.password = 'testPassword'
+        self.password = keyring.get_password(SERVICE_NAME,self.email)
         self.token = 'testToken'
 
         IOLoop.current().run_sync(self.register)

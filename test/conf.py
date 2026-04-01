@@ -1,11 +1,19 @@
-PORT = 4000
+#Add service name
 SERVICE_NAME = 'key_db'
 
+import keyring
+PORT = 4000
+MONGO_DB_SERVICE = "access_db"
+MONGO_DB_USER = "access_db_user"
+#Added username and password to authenticated db login
+#Use keyring for mongo access, username and password
 MONGODB_HOST = {
     'host': 'localhost',
-    'port': 27017
+    'port': 27017,
+    'username': keyring.get_password(MONGO_DB_USER,"None"),
+    'password': keyring.get_password(MONGO_DB_SERVICE,keyring.get_password(MONGO_DB_USER,"None"))
 }
 
-MONGODB_DBNAME = 'cyberStudentsTest'
+MONGODB_DBNAME = 'cyberStudents'
 
-WORKERS = 1
+WORKERS = 32
