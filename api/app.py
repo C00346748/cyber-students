@@ -34,4 +34,7 @@ class Application(Application):
         # Motor client is imported from motor.motor_tornado
         self.db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 
+        #Possible addition of authenticated db connection
+        #self.db = MotorClient("mongodb://admin:password@ds047057.mongolab.com:47057/[MONGODB_DBNAME]").open_sync().[MONGODB_DBNAME]
+
         self.executor = ThreadPoolExecutor(WORKERS)

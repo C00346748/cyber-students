@@ -14,5 +14,6 @@ def main():
     info('Starting server on port ' + str(PORT) + '...')
     IOLoop.current().start()
 
+#Configure to run as script
 if __name__ == '__main__':
     main()

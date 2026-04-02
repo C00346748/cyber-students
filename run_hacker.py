@@ -1,10 +1,15 @@
 import asyncio
 import click
+import aes_encrypt_decrypt
 from json import loads
 from motor.motor_tornado import MotorClient
 
 #The configure file has the login details
 from api.conf import MONGODB_HOST, MONGODB_DBNAME
+
+print("Test here")
+
+print(aes_encrypt_decrypt.encrypt("This is the text to decrypt"))
 
 #Queries mongo for info
 async def get_users(db):
