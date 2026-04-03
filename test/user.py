@@ -72,8 +72,13 @@ class UserHandlerTest(BaseTest):
         super().setUp()
         #password = aes_encrypt_decrypt.decrypt(self.email).decode("utf-8")
         #keyring should be added here add tokens
-        self.email = 'test@test.com'
-        self.password = keyring.get_password(SERVICE_NAME,self.email)
+        plain_text = b'test@test.com'
+        public_key_str = PUB_KEY
+        public_key = rsa_encrypt_decrypt_with_keyring_chunking.convert_pub_to_pem(public_key_str)
+        cipher_email = rsa_encrypt_decrypt_with_keyring_chunking.encrypt_message(public_key, plain_text, 32)
+
+        self.email = b"".join(cipher_email).hex()
+        self.password = keyring.get_password(SERVICE_NAME,plain_text.decode("utf-8"))
         self.display_name = 'testDisplayName'
         self.token = 'testToken'
 
