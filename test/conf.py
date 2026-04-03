@@ -1,7 +1,9 @@
+import keyring
+
 #Add service name
 SERVICE_NAME = 'key_db'
-PRV_KEY = ''
-PUB_KEY = ''
+PUB_KEY = keyring.get_password("hash_pub","None")
+PRV_KEY = keyring.get_password("hash_prv","None")
 
 import keyring
 PORT = 4000

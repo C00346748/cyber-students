@@ -3,7 +3,7 @@ from tornado.escape import json_decode
 from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 from tornado.web import Application
-from .conf import SERVICE_NAME, PRV_KEY
+from .conf import SERVICE_NAME, PRV_KEY, PUB_KEY
 from cryptography.hazmat.primitives import hashes, serialization
 
 import keyring
@@ -36,15 +36,15 @@ class UserHandlerTest(BaseTest):
         
         print('Hash**')
         plain_text = b'testing 123'
-        public_key_str = keyring.get_password("hash_pub","None")
+        public_key_str = PUB_KEY
         public_key = rsa_encrypt_decrypt_with_keyring_chunking.convert_pub_to_pem(public_key_str)
         cipher_text = rsa_encrypt_decrypt_with_keyring_chunking.encrypt_message(public_key, plain_text, 32)
         print("Ciphertext Hash: " + b"".join(cipher_text).hex())
         print(hash)
-        private_key_str = keyring.get_password("hash_prv","None")
+        private_key_str = PRV_KEY
         private_key = rsa_encrypt_decrypt_with_keyring_chunking.convert_prv_to_pem(private_key_str)
         decoded_plaintext = rsa_encrypt_decrypt_with_keyring_chunking.decrypt_message(private_key,cipher_text)
-        print(f"This is decoded hash + {decoded_plaintext.decode("utf-8")}")
+        print(f"This is decoded hash: {decoded_plaintext.decode("utf-8")}")
         '''
         #TEST
         if(PRV_KEY!=''):
