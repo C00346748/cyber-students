@@ -5,6 +5,7 @@ from tornado.web import Application
 from .conf import SERVICE_NAME
 
 import keyring
+import aes_encrypt_decrypt
 
 from api.handlers.registration import RegistrationHandler
 
@@ -25,12 +26,14 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration(self):
         email = 'test@test.com'
         display_name = 'testDisplayName'
+        password = keyring.get_password(SERVICE_NAME,email)
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
-          'password': keyring.get_password(SERVICE_NAME,email),
+          'password': password,
           'displayName': display_name
         }
+        print(f"**** + {body['email']}")
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
         self.assertEqual(200, response.code)

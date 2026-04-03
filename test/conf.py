@@ -1,5 +1,7 @@
 #Add service name
 SERVICE_NAME = 'key_db'
+PRV_KEY = ''
+PUB_KEY = ''
 
 import keyring
 PORT = 4000

@@ -9,7 +9,10 @@ from api.conf import MONGODB_HOST, MONGODB_DBNAME
 
 print("Test here")
 
-print(aes_encrypt_decrypt.encrypt("This is the text to decrypt"))
+#enc = aes_encrypt_decrypt.encrypt("This is the text to decrypt")
+#print(enc)
+#dec = aes_encrypt_decrypt.decrypt(enc)
+#print(dec)
 
 #Queries mongo for info
 async def get_users(db):

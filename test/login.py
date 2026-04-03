@@ -5,6 +5,8 @@ from tornado.web import Application
 from .conf import SERVICE_NAME
 
 import keyring
+import aes_encrypt_decrypt
+import rsa_encrypt_decrypt_with_keyring_chunking
 
 from .base import BaseTest
 
@@ -24,6 +26,7 @@ class LoginHandlerTest(BaseTest):
             'password': self.password,
             'displayName': 'testDisplayName'
         })
+
 
     def setUp(self):
         super().setUp()
