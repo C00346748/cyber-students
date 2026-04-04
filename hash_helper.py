@@ -4,6 +4,7 @@ from cryptography.hazmat.backends import default_backend
 
 import os
 import keyring
+from test.conf import SERVICE_NAME, PRV_KEY, PUB_KEY
 
 private_key = rsa.generate_private_key(
     public_exponent=65537,
@@ -70,6 +71,20 @@ def decrypt_message(private_key, encrypted_chunks):
             )
         ))
     return b"".join(decrypted_chunks)
+
+def hash_string(str):
+    str_bytes = str.encode("utf-8")
+    public_key_str = PUB_KEY
+    public_key = convert_pub_to_pem(public_key_str)
+    cipher_text = encrypt_message(public_key,str_bytes, 32)
+    return cipher_text
+
+def dehash_string(str):
+    private_key_str = PRV_KEY
+    private_key = convert_prv_to_pem(private_key_str)
+    decoded_plaintext = decrypt_message(private_key,str)
+    return decoded_plaintext.decode("utf-8")
+
 
 # Test cases
 '''

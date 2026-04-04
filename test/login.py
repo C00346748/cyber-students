@@ -6,7 +6,7 @@ from .conf import SERVICE_NAME
 
 import keyring
 import aes_encrypt_decrypt
-import rsa_encrypt_decrypt_with_keyring_chunking
+import hash_helper
 
 from .base import BaseTest
 

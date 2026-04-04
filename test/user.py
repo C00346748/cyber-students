@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 
 import keyring
 import aes_encrypt_decrypt
-import rsa_encrypt_decrypt_with_keyring_chunking
+import hash_helper
 
 from api.handlers.user import UserHandler
 
@@ -35,16 +35,16 @@ class UserHandlerTest(BaseTest):
         #print(f"Set user: {self.display_name}")
         
         print('Hash**')
-        plain_text = b'testing 123'
-        public_key_str = PUB_KEY
-        public_key = rsa_encrypt_decrypt_with_keyring_chunking.convert_pub_to_pem(public_key_str)
-        cipher_text = rsa_encrypt_decrypt_with_keyring_chunking.encrypt_message(public_key, plain_text, 32)
+        plain_text = 'testing 123'
+        #public_key_str = PUB_KEY
+        #public_key = hash_helper.convert_pub_to_pem(public_key_str)
+        cipher_text = hash_helper.hash_string(plain_text)
         print("Ciphertext Hash: " + b"".join(cipher_text).hex())
         print(hash)
-        private_key_str = PRV_KEY
-        private_key = rsa_encrypt_decrypt_with_keyring_chunking.convert_prv_to_pem(private_key_str)
-        decoded_plaintext = rsa_encrypt_decrypt_with_keyring_chunking.decrypt_message(private_key,cipher_text)
-        print(f"This is decoded hash: {decoded_plaintext.decode("utf-8")}")
+        #private_key_str = PRV_KEY
+        #private_key = hash_helper.convert_prv_to_pem(private_key_str)
+        decoded_plaintext = hash_helper.dehash_string(cipher_text)
+        print(f"This is decoded hash: {decoded_plaintext}")
         '''
         #TEST
         if(PRV_KEY!=''):
@@ -72,11 +72,12 @@ class UserHandlerTest(BaseTest):
         super().setUp()
         #password = aes_encrypt_decrypt.decrypt(self.email).decode("utf-8")
         #keyring should be added here add tokens
+        
         plain_text = b'test@test.com'
         public_key_str = PUB_KEY
-        public_key = rsa_encrypt_decrypt_with_keyring_chunking.convert_pub_to_pem(public_key_str)
-        cipher_email = rsa_encrypt_decrypt_with_keyring_chunking.encrypt_message(public_key, plain_text, 32)
-
+        public_key = hash_helper.convert_pub_to_pem(public_key_str)
+        cipher_email = hash_helper.encrypt_message(public_key, plain_text, 32)
+        
         self.email = b"".join(cipher_email).hex()
         self.password = keyring.get_password(SERVICE_NAME,plain_text.decode("utf-8"))
         self.display_name = 'testDisplayName'
