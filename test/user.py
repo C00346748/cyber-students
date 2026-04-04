@@ -31,6 +31,9 @@ class UserHandlerTest(BaseTest):
             'displayName': self.display_name
         })
         print(f"Set user: {self.email}") #Some prints to verify functions
+        print(f"Password user: {self.password}") #Some prints to verify functions
+        print(f"Display Name: {self.display_name}") #Some prints to verify functions
+         
         #print(f"Set user: {self.password}")
         #print(f"Set user: {self.display_name}")
         
@@ -39,8 +42,8 @@ class UserHandlerTest(BaseTest):
         #public_key_str = PUB_KEY
         #public_key = hash_helper.convert_pub_to_pem(public_key_str)
         cipher_text = hash_helper.hash_string(plain_text)
-        print("Ciphertext Hash***: " + b"".join(cipher_text).hex())
-        print(hash)
+        hash = b"".join(cipher_text).hex()
+        print(f"The hashed string : {hash}")
         #private_key_str = PRV_KEY
         #private_key = hash_helper.convert_prv_to_pem(private_key_str)
         decoded_plaintext = hash_helper.dehash_string(cipher_text)
@@ -73,15 +76,14 @@ class UserHandlerTest(BaseTest):
         #password = aes_encrypt_decrypt.decrypt(self.email).decode("utf-8")
         #keyring should be added here add tokens
         
-        plain_text = b'test@test.com'
-        public_key_str = PUB_KEY
-        public_key = hash_helper.convert_pub_to_pem(public_key_str)
-        cipher_email = hash_helper.encrypt_message(public_key, plain_text, 32)
+        plain_text = 'test@test.com'
+        cipher_email = hash_helper.hash_string(plain_text)
         
+        #These are all hashed
         self.email = b"".join(cipher_email).hex()
-        self.password = keyring.get_password(SERVICE_NAME,plain_text.decode("utf-8"))
-        self.display_name = 'testDisplayName'
-        self.token = 'testToken'
+        self.password = b"".join(hash_helper.hash_string(keyring.get_password(SERVICE_NAME,plain_text))).hex()
+        self.display_name = b"".join(hash_helper.hash_string('testDisplayName')).hex()
+        self.token = b"".join(hash_helper.hash_string('testToken')).hex()
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
