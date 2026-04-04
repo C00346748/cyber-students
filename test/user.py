@@ -39,12 +39,12 @@ class UserHandlerTest(BaseTest):
         #public_key_str = PUB_KEY
         #public_key = hash_helper.convert_pub_to_pem(public_key_str)
         cipher_text = hash_helper.hash_string(plain_text)
-        print("Ciphertext Hash: " + b"".join(cipher_text).hex())
+        print("Ciphertext Hash***: " + b"".join(cipher_text).hex())
         print(hash)
         #private_key_str = PRV_KEY
         #private_key = hash_helper.convert_prv_to_pem(private_key_str)
         decoded_plaintext = hash_helper.dehash_string(cipher_text)
-        print(f"This is decoded hash: {decoded_plaintext}")
+        print(f"This is decoded hash***: {decoded_plaintext}")
         '''
         #TEST
         if(PRV_KEY!=''):
