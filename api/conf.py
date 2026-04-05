@@ -2,6 +2,7 @@ import keyring
 PORT = 4000
 MONGO_DB_SERVICE = "access_db"
 MONGO_DB_USER = "access_db_user"
+PEPPER = keyring.get_password("pepper_student_app","None")
 #Added username and password to authenticated db login
 #Use keyring for mongo access, username and password
 MONGODB_HOST = {

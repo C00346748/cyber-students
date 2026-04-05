@@ -6,6 +6,7 @@ from .conf import SERVICE_NAME
 
 import keyring
 import aes_encrypt_decrypt
+import sha3_hash_helper
 
 from api.handlers.registration import RegistrationHandler
 
@@ -26,7 +27,7 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration(self):
         email = 'test@test.com'
         display_name = 'testDisplayName'
-        password = keyring.get_password(SERVICE_NAME,email)
+        password = 'testPassword'
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
@@ -48,7 +49,7 @@ class RegistrationHandlerTest(BaseTest):
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
-          'password': keyring.get_password(SERVICE_NAME,email)
+          'password': 'testPassword'
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
@@ -63,7 +64,7 @@ class RegistrationHandlerTest(BaseTest):
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': 'test@test.com',
-          'password': keyring.get_password(SERVICE_NAME,'test@test.com'),
+          'password': 'testPassword',
           'displayName': 'testDisplayName'
         }
 

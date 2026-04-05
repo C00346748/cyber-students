@@ -8,7 +8,8 @@ from cryptography.hazmat.primitives import hashes, serialization
 
 import keyring
 import aes_encrypt_decrypt
-import hash_helper
+import sha3_hash_helper
+import base64
 
 from api.handlers.user import UserHandler
 
@@ -38,29 +39,7 @@ class UserHandlerTest(BaseTest):
         #print(f"Set user: {self.display_name}")
         
         print('Hash**')
-        plain_text = 'testing 123'
-        #public_key_str = PUB_KEY
-        #public_key = hash_helper.convert_pub_to_pem(public_key_str)
-        cipher_text = hash_helper.hash_string(plain_text)
-        hash = b"".join(cipher_text).hex()
-        print(f"The hashed string : {hash}")
-        #private_key_str = PRV_KEY
-        #private_key = hash_helper.convert_prv_to_pem(private_key_str)
-        decoded_plaintext = hash_helper.dehash_string(cipher_text)
-        print(f"This is decoded hash***: {decoded_plaintext}")
-        '''
-        #TEST
-        if(PRV_KEY!=''):
-            print('*** PRV PRINT ***')
-            private_key_str = PRV_KEY.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption()
-            )
-            print(private_key_str.decode("utf-8"))
-        #print(rsa_hash_small_message.decrypt_hash(hash))
-        #print('***Hash')
-        '''
+
     #Gets the database connection via webserver and calls update
     #Setting token on the user
     async def login(self):
@@ -76,14 +55,14 @@ class UserHandlerTest(BaseTest):
         #password = aes_encrypt_decrypt.decrypt(self.email).decode("utf-8")
         #keyring should be added here add tokens
         
-        plain_text = 'test@test.com'
-        cipher_email = hash_helper.hash_string(plain_text)
+        ### HASH HERE
         
         #These are all hashed
-        self.email = b"".join(cipher_email).hex()
-        self.password = b"".join(hash_helper.hash_string(keyring.get_password(SERVICE_NAME,plain_text))).hex()
-        self.display_name = b"".join(hash_helper.hash_string('testDisplayName')).hex()
-        self.token = b"".join(hash_helper.hash_string('testToken')).hex()
+        self.email = sha3_hash_helper.hash('test@test.com')
+        print(f"email hashed to ascii: {self.email}")
+        self.password = sha3_hash_helper.hash(keyring.get_password(SERVICE_NAME,self.email))
+        self.display_name = sha3_hash_helper.hash('testDisplayName')
+        self.token = 'testToken'
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)

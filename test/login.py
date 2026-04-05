@@ -6,7 +6,7 @@ from .conf import SERVICE_NAME
 
 import keyring
 import aes_encrypt_decrypt
-import hash_helper
+import sha3_hash_helper
 
 from .base import BaseTest
 
@@ -35,7 +35,7 @@ class LoginHandlerTest(BaseTest):
         #Trial 1: Going to replace this with key ring password, no token yet
         #The test still passed using keyring
         self.email = 'test@test.com'
-        self.password = keyring.get_password(SERVICE_NAME,self.email)
+        self.password = 'testPassword'
 
         IOLoop.current().run_sync(self.register)
 

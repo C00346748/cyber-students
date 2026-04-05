@@ -39,7 +39,7 @@ class LogoutHandlerTest(BaseTest):
         super().setUp()
         #Use of raw password replaced with keyring
         self.email = 'test@test.com'
-        self.password = keyring.get_password(SERVICE_NAME,self.email)
+        self.password = 'testPassword'
         self.token = 'testToken'
 
         IOLoop.current().run_sync(self.register)

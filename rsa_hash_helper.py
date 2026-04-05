@@ -85,7 +85,6 @@ def dehash_string(str):
     decoded_plaintext = decrypt_message(private_key,str)
     return decoded_plaintext.decode("utf-8")
 
-
 # Test cases
 '''
 long_plaintext = b'This is a really  really  really  really  really  really  really  really  really  really  really  really  really  really  really  really  really  really long piece of text'
@@ -95,7 +94,9 @@ long_plaintext_2 = decrypt_message(private_key, long_ciphertext)
 print()
 print("Plaintext: " + long_plaintext.decode("utf-8"))
 print()
-print("Ciphertext: " + b"".join(long_ciphertext).hex())
+test = b"".join(long_ciphertext).hex()
+print("Ciphertext: " + test)
 print()
 print("Original Plaintext: " + long_plaintext_2.decode("utf-8"))
 '''
+
