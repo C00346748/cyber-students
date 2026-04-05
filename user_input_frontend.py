@@ -10,7 +10,6 @@ from motor.motor_tornado import MotorClient
 import asyncio
 import keyring
 import aes_encrypt_decrypt
-import hash_helper
 
 from api.handlers.user import UserHandler
 from api.handlers.registration import RegistrationHandler
