@@ -62,7 +62,7 @@ class UserHandlerTest(BaseTest):
         print(f"email hashed to ascii: {self.email}")
         self.password = sha3_hash_helper.hash(keyring.get_password(SERVICE_NAME,self.email))
         self.display_name = sha3_hash_helper.hash('testDisplayName')
-        self.token = 'testToken'
+        self.token = sha3_hash_helper.hash('testToken')
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
@@ -70,7 +70,7 @@ class UserHandlerTest(BaseTest):
     #Fetch user with token
     def test_user(self):
         headers = HTTPHeaders({'X-Token': self.token})
-
+        print(f"Token: {self.token}")
         response = self.fetch('/user', headers=headers)
         self.assertEqual(200, response.code)
 
