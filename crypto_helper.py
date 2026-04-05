@@ -35,11 +35,26 @@ def add_pepper(str):
     # Return the peppered password as bytes for the next hashing step
     return hash_b64.decode('ascii')
 
-def add_salt_and_pepper(str):
-    salt = os.urandom(32) #Salt 256
-    salt_64 = base64.b64encode(salt)
+def add_salt_and_pepper(str,salt):
+    salt_64 = base64.b64encode(salt.encode())
     salted_and_peppered = salt_64.decode('ascii') + hash(str) + add_pepper(str)
     return salted_and_peppered
+
+def set_salt(user):
+    #Will be sent to the database
+    base64_rand = base64.b64encode(os.urandom(32))
+    rand_str = base64_rand.decode('utf-8')
+    if(get_salt(user)==None):
+        keyring.set_password("salts",user,rand_str)
+
+def get_salt(user):
+    try:
+        return keyring.get_password("salts",user)
+    except:
+        return None
+    
+def set_token():
+    return None
 
 #Configure to run as script
 if __name__ == '__main__':

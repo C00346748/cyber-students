@@ -6,7 +6,7 @@ from .conf import SERVICE_NAME
 
 import keyring
 import aes_encrypt_decrypt
-import sha3_hash_helper
+import crypto_helper
 
 from api.handlers.registration import RegistrationHandler
 
@@ -26,6 +26,10 @@ class RegistrationHandlerTest(BaseTest):
     #Sends reg request to webserver
     def test_registration(self):
         email = 'test@test.com'
+        crypto_helper.set_salt('test@test.com')
+        print(f"Salt for user:  {crypto_helper.get_salt('test@test.com')}")
+        email = crypto_helper.add_salt_and_pepper(crypto_helper.get_salt('test@test.com'),'test@test.com')
+        print(f"Salt and peppered user {email}")
         display_name = 'testDisplayName'
         password = 'testPassword'
         #body dictionary replacing password retrieval with keyring
@@ -34,38 +38,45 @@ class RegistrationHandlerTest(BaseTest):
           'password': password,
           'displayName': display_name
         }
-        print(f"**** + {body['email']}")
+        print(f"**** {body['email']}")
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
         self.assertEqual(200, response.code)
 
         body_2 = json_decode(response.body)
+        print("Email from JSON " + body_2['email'])
         self.assertEqual(email, body_2['email'])
         self.assertEqual(display_name, body_2['displayName'])
 
     #Sends reg request without display name which is fine
     def test_registration_without_display_name(self):
         email = 'test@test.com'
+        password = 'testPassword'
+        email = 'test@test.com'
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
-          'password': 'testPassword'
+          'password': password
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
         self.assertEqual(200, response.code)
 
         body_2 = json_decode(response.body)
+        print("Email from JSON ** No disp name " + body_2['email'])
         self.assertEqual(email, body_2['email'])
         self.assertEqual(email, body_2['displayName'])
 
     #Double reg, should pass first attempt and fail second attempt to reg same user
     def test_registration_twice(self):
+        email = 'test@test.com'
+        display_name = 'testDisplayName'
+        password = 'testPassword'
         #body dictionary replacing password retrieval with keyring
         body = {
-          'email': 'test@test.com',
-          'password': 'testPassword',
-          'displayName': 'testDisplayName'
+          'email': email,
+          'password': password,
+          'displayName': display_name
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))

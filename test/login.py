@@ -6,7 +6,7 @@ from .conf import SERVICE_NAME
 
 import keyring
 import aes_encrypt_decrypt
-import sha3_hash_helper
+import crypto_helper
 
 from .base import BaseTest
 

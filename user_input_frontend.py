@@ -1,39 +1,26 @@
-from json import dumps
-from tornado.escape import json_decode
-from tornado.httputil import HTTPHeaders
-from tornado.ioloop import IOLoop
-from tornado.web import Application
-from test.conf import SERVICE_NAME, PRV_KEY, PUB_KEY
-from cryptography.hazmat.primitives import hashes, serialization
-from motor.motor_tornado import MotorClient
 
-import asyncio
-import keyring
-import aes_encrypt_decrypt
+def input_data():
+    fullname = input('Please enter your full name: ')
+    email = input('Please enter your email')
+    address = input('Eneter your full address: ')
+    dob = input('Enter your date of birth DD/MM/YYY: ')
+    phone_number = input('Enter your phone number: ')
+    list_disabilities = input('Enter your list of disabilities: ')
+    print(fullname + "\n" + address + "\n" + dob + "\n" + phone_number + "\n" + list_disabilities)
 
-from api.handlers.user import UserHandler
-from api.handlers.registration import RegistrationHandler
-from concurrent.futures import ThreadPoolExecutor
-from mongomock_motor import AsyncMongoMockClient
-from test.base import BaseTest
+def print_details():
+    return None
 
-from test.conf import MONGODB_DBNAME, WORKERS, MONGODB_HOST
-
-db = None
-
-async def register():
-    my_app = Application([(r'/registration', RegistrationHandler)])
-    my_app.db = AsyncMongoMockClient()[MONGODB_DBNAME]
-    my_app.executor = ThreadPoolExecutor(WORKERS)
-    db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
-    await my_app.db.users.insert_one({
-        'email': 'luke@luke.com',
-        'password': 'password',
-        'displayName': 'testDisplayName'
-    })
-
-
+def register():
+    command_curl = 'curl -X POST http://localhost:4000/students/api/login -d '
+    command_email = '{\"email\": \"foo@bar.com\",'
+    command_password = '\"password\": \"pass\"}"'
+    command_token = '{"token": "68fb2bf3b4dd4f48913d27d4e3220140", "expiresIn": 1774798170.719328}'
+    full_command = command_curl + command_email + command_password + command_token
+    print(full_command)
 
 #Confifure to run as script
 if __name__ == '__main__':
+    input_data()
+    print_details()
     register()

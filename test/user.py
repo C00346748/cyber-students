@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 
 import keyring
 import aes_encrypt_decrypt
-import sha3_hash_helper
+import crypto_helper
 import base64
 
 from api.handlers.user import UserHandler
@@ -58,13 +58,11 @@ class UserHandlerTest(BaseTest):
         ### HASH HERE
         
         #These are all hashed
-        self.email = sha3_hash_helper.hash('test@test.com')
+        self.email = 'test@test.com'
         print(f"email hashed to ascii: {self.email}")
-        self.password = sha3_hash_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,self.email))
-        #Once password retrieved from hashed email, salt and pepper to DB
-        self.email = sha3_hash_helper.add_salt_and_pepper('test@test.com')
-        self.display_name = sha3_hash_helper.add_salt_and_pepper('testDisplayName')
-        self.token = sha3_hash_helper.add_salt_and_pepper('testToken')
+        self.password = 'testPassword'
+        self.display_name = 'testDisplayName'
+        self.token = 'testToken'
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
@@ -72,7 +70,7 @@ class UserHandlerTest(BaseTest):
     #Fetch user with token
     def test_user(self):
         headers = HTTPHeaders({'X-Token': self.token})
-        print(f"Token: {self.token}")
+
         response = self.fetch('/user', headers=headers)
         self.assertEqual(200, response.code)
 
