@@ -60,9 +60,11 @@ class UserHandlerTest(BaseTest):
         #These are all hashed
         self.email = sha3_hash_helper.hash('test@test.com')
         print(f"email hashed to ascii: {self.email}")
-        self.password = sha3_hash_helper.hash(keyring.get_password(SERVICE_NAME,self.email))
-        self.display_name = sha3_hash_helper.hash('testDisplayName')
-        self.token = sha3_hash_helper.hash('testToken')
+        self.password = sha3_hash_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,self.email))
+        #Once password retrieved from hashed email, salt and pepper to DB
+        self.email = sha3_hash_helper.add_salt_and_pepper('test@test.com')
+        self.display_name = sha3_hash_helper.add_salt_and_pepper('testDisplayName')
+        self.token = sha3_hash_helper.add_salt_and_pepper('testToken')
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
