@@ -27,11 +27,12 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration(self):
         email = 'test@test.com'
         crypto_helper.set_salt('test@test.com')
-        print(f"Salt for user:  {crypto_helper.get_salt('test@test.com')}")
-        email = crypto_helper.add_salt_and_pepper(crypto_helper.get_salt('test@test.com'),'test@test.com')
-        print(f"Salt and peppered user {email}")
-        display_name = 'testDisplayName'
-        password = 'testPassword'
+        #print(f"Salt for user:  {crypto_helper.get_salt('test@test.com')}")
+        email = crypto_helper.add_salt_and_pepper('test@test.com',crypto_helper.get_salt('test@test.com'))
+        #print(f"Salt and peppered user {email}")
+        display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
+        #print(f"Salt and peppered display name {display_name}")
+        password = crypto_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,crypto_helper.hash('test@test.com')),crypto_helper.get_salt('test@test.com'))
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
@@ -44,35 +45,40 @@ class RegistrationHandlerTest(BaseTest):
         self.assertEqual(200, response.code)
 
         body_2 = json_decode(response.body)
-        print("Email from JSON " + body_2['email'])
+        print("Email from JSON Pass reg " + body_2['email'])
         self.assertEqual(email, body_2['email'])
         self.assertEqual(display_name, body_2['displayName'])
 
     #Sends reg request without display name which is fine
+
     def test_registration_without_display_name(self):
-        email = 'test@test.com'
-        password = 'testPassword'
-        email = 'test@test.com'
-        #body dictionary replacing password retrieval with keyring
+        email = crypto_helper.add_salt_and_pepper('test@test.com',crypto_helper.get_salt('test@test.com'))
+        password = crypto_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,crypto_helper.hash('test@test.com')),crypto_helper.get_salt('test@test.com'))
+
         body = {
           'email': email,
           'password': password
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
+        
         self.assertEqual(200, response.code)
-
+        
         body_2 = json_decode(response.body)
-        print("Email from JSON ** No disp name " + body_2['email'])
+        print("Compare " + email + " with " + body_2['email'])
         self.assertEqual(email, body_2['email'])
+        
         self.assertEqual(email, body_2['displayName'])
 
     #Double reg, should pass first attempt and fail second attempt to reg same user
     def test_registration_twice(self):
-        email = 'test@test.com'
-        display_name = 'testDisplayName'
-        password = 'testPassword'
+        email = crypto_helper.add_salt_and_pepper('test@test.com',crypto_helper.get_salt('test@test.com'))
+        print("Email in test without display name " + email)
+        password = crypto_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,crypto_helper.hash('test@test.com')),crypto_helper.get_salt('test@test.com'))
+        print("Password in test without display name " + password)
         #body dictionary replacing password retrieval with keyring
+        display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
+
         body = {
           'email': email,
           'password': password,

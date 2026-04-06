@@ -35,6 +35,7 @@ def add_pepper(str):
     # Return the peppered password as bytes for the next hashing step
     return hash_b64.decode('ascii')
 
+#To use this you need to pass the salt associated with user
 def add_salt_and_pepper(str,salt):
     salt_64 = base64.b64encode(salt.encode())
     salted_and_peppered = salt_64.decode('ascii') + hash(str) + add_pepper(str)

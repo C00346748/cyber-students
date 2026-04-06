@@ -7,8 +7,8 @@ class RegistrationHandler(BaseHandler):
     async def post(self):
         try:
             body = json_decode(self.request.body)
-            email = body['email'] # removing stripping for encryption .lower().strip()
-            print("In API email is " + email)
+            #Removed the strip and smalls because it doesn't work with encypted text
+            email = body['email']
             password = body['password']
             display_name = body.get('displayName')
             if display_name is None:
