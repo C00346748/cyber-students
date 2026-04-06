@@ -1,7 +1,7 @@
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.backends import default_backend
 import keyring
-from test.conf import PEPPER
+from test.conf import PEPPER, SERVICE_NAME
 import base64
 import os
 
@@ -56,6 +56,18 @@ def get_salt(user):
     
 def set_token():
     return None
+
+def encrypt_pwd(user_email):
+    email = add_salt_and_pepper(user_email,get_salt(user_email))
+    password = add_salt_and_pepper(keyring.get_password(SERVICE_NAME,hash('test@test.com')),get_salt('test@test.com'))
+    return password
+
+def encrypt_email(user_email):
+    email = add_salt_and_pepper(user_email,get_salt(user_email))
+    return email
+
+def encrypt_other_string(user_mail, str_to_encrypt):
+    return add_salt_and_pepper(str_to_encrypt,get_salt(user_mail))
 
 #Configure to run as script
 if __name__ == '__main__':

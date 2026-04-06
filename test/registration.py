@@ -28,11 +28,10 @@ class RegistrationHandlerTest(BaseTest):
         email = 'test@test.com'
         crypto_helper.set_salt('test@test.com')
         #print(f"Salt for user:  {crypto_helper.get_salt('test@test.com')}")
-        email = crypto_helper.add_salt_and_pepper('test@test.com',crypto_helper.get_salt('test@test.com'))
-        #print(f"Salt and peppered user {email}")
-        display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
+        email = crypto_helper.encrypt_email('test@test.com')
+        display_name = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
         #print(f"Salt and peppered display name {display_name}")
-        password = crypto_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,crypto_helper.hash('test@test.com')),crypto_helper.get_salt('test@test.com'))
+        password = crypto_helper.encrypt_pwd('test@test.com')
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
@@ -52,8 +51,8 @@ class RegistrationHandlerTest(BaseTest):
     #Sends reg request without display name which is fine
 
     def test_registration_without_display_name(self):
-        email = crypto_helper.add_salt_and_pepper('test@test.com',crypto_helper.get_salt('test@test.com'))
-        password = crypto_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,crypto_helper.hash('test@test.com')),crypto_helper.get_salt('test@test.com'))
+        email = crypto_helper.encrypt_email('test@test.com')
+        password = crypto_helper.encrypt_pwd('test@test.com')
 
         body = {
           'email': email,
