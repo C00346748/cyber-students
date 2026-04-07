@@ -32,14 +32,14 @@ class RegistrationHandlerTest(BaseTest):
         display_name = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
         #print(f"Salt and peppered display name {display_name}")
         password = crypto_helper.encrypt_pwd('test@test.com')
-        print(f"**** Password and Email Reg ****  {email} password {password}")
+        #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
           'password': password,
           'displayName': display_name
         }
-        print(f"**** {body['email']}")
+        #print(f"**** {body['email']}")
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
         self.assertEqual(200, response.code)
@@ -64,7 +64,7 @@ class RegistrationHandlerTest(BaseTest):
         self.assertEqual(200, response.code)
         
         body_2 = json_decode(response.body)
-        print("Compare " + email + " with " + body_2['email'])
+        #print("Compare " + email + " with " + body_2['email'])
         self.assertEqual(email, body_2['email'])
         
         self.assertEqual(email, body_2['displayName'])

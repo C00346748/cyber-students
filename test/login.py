@@ -24,7 +24,7 @@ class LoginHandlerTest(BaseTest):
         await self.get_app().db.users.insert_one({
             'email': self.email,
             'password': self.password,
-            'displayName': crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
+            'displayName': self.displayName
         })
 
 
@@ -36,6 +36,7 @@ class LoginHandlerTest(BaseTest):
         #The test still passed using keyring
         self.email = crypto_helper.encrypt_email('test@test.com')
         self.password = crypto_helper.encrypt_pwd('test@test.com')
+        self.displayName = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
 
         IOLoop.current().run_sync(self.register)
 
