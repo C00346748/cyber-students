@@ -61,10 +61,10 @@ class UserHandlerTest(BaseTest):
         self.email = 'test@test.com'
         crypto_helper.set_salt('test@test.com')
         self.email = crypto_helper.encrypt_email('test@test.com')
-        print(f"email hashed to ascii: {self.email}")
-        self.password = crypto_helper.encrypt_email('test@test.com')
+        print(f"**** USER *** email hashed to ascii: {self.email}")
+        self.password = crypto_helper.encrypt_pwd('test@test.com')
         self.display_name = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
-        self.token = crypto_helper.encrypt_other_string('test@test.com','testToken')
+        self.token = 'testToken'
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)

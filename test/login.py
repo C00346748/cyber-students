@@ -95,3 +95,4 @@ class LoginHandlerTest(BaseTest):
 
         response = self.fetch('/login', method='POST', body=dumps(body))
         self.assertEqual(403, response.code)
+        

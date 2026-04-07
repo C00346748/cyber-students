@@ -39,7 +39,7 @@ class LoginHandler(BaseHandler):
         if not password:
             self.send_error(400, message='The password is invalid!')
             return
-
+        #Something might need to change here, passing '1' as password???
         user = await self.db.users.find_one({
           'email': email
         }, {

@@ -32,6 +32,7 @@ class RegistrationHandlerTest(BaseTest):
         display_name = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
         #print(f"Salt and peppered display name {display_name}")
         password = crypto_helper.encrypt_pwd('test@test.com')
+        print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         body = {
           'email': email,
@@ -44,7 +45,6 @@ class RegistrationHandlerTest(BaseTest):
         self.assertEqual(200, response.code)
 
         body_2 = json_decode(response.body)
-        print("Email from JSON Pass reg " + body_2['email'])
         self.assertEqual(email, body_2['email'])
         self.assertEqual(display_name, body_2['displayName'])
 
@@ -72,9 +72,9 @@ class RegistrationHandlerTest(BaseTest):
     #Double reg, should pass first attempt and fail second attempt to reg same user
     def test_registration_twice(self):
         email = crypto_helper.add_salt_and_pepper('test@test.com',crypto_helper.get_salt('test@test.com'))
-        print("Email in test without display name " + email)
+        #print("Email in test without display name " + email)
         password = crypto_helper.add_salt_and_pepper(keyring.get_password(SERVICE_NAME,crypto_helper.hash('test@test.com')),crypto_helper.get_salt('test@test.com'))
-        print("Password in test without display name " + password)
+        #print("Password in test without display name " + password)
         #body dictionary replacing password retrieval with keyring
         display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
 
