@@ -58,6 +58,7 @@ def set_token():
     return None
 
 def encrypt_pwd(user_email):
+    set_salt(user_email) #only done if not done already per user email
     email = add_salt_and_pepper(user_email,get_salt(user_email))
     password = add_salt_and_pepper(keyring.get_password(SERVICE_NAME,hash('test@test.com')),get_salt('test@test.com'))
     return password

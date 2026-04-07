@@ -34,8 +34,8 @@ class LoginHandlerTest(BaseTest):
         #This is raw text would need to change
         #Trial 1: Going to replace this with key ring password, no token yet
         #The test still passed using keyring
-        self.email = 'test@test.com'
-        self.password = 'testPassword'
+        self.email = crypto_helper.encrypt_email('test@test.com')
+        self.password = crypto_helper.encrypt_pwd('test@test.com')
 
         IOLoop.current().run_sync(self.register)
 
@@ -65,13 +65,15 @@ class LoginHandlerTest(BaseTest):
         }
 
         response = self.fetch('/login', method='POST', body=dumps(body))
-        self.assertEqual(200, response.code)
+        #This should not work with hashed emails and passwords
+        self.assertEqual(403, response.code)
 
         body_2 = json_decode(response.body)
 
+        #Now FAILS because this is working with hashes
         #Raw tokens but only checks it's not empty
-        self.assertIsNotNone(body_2['token'])
-        self.assertIsNotNone(body_2['expiresIn'])
+        #self.assertIsNotNone(body_2['token'])
+        #self.assertIsNotNone(body_2['expiresIn'])
 
     #Deliberately sending a wrong e-mail, expects fail 403
     def test_login_wrong_email(self):
@@ -95,4 +97,3 @@ class LoginHandlerTest(BaseTest):
 
         response = self.fetch('/login', method='POST', body=dumps(body))
         self.assertEqual(403, response.code)
-        

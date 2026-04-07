@@ -26,8 +26,10 @@ class LoginHandler(BaseHandler):
     async def post(self):
         try:
             body = json_decode(self.request.body)
-            email = body['email'].lower().strip()
+            #Remove strip no good with hashes
+            email = body['email']
             password = body['password']
+            print(f"####xxxx Body email login is {body['email']}")
         except Exception:
             self.send_error(400, message='You must provide an email address and password!')
             return
@@ -49,7 +51,7 @@ class LoginHandler(BaseHandler):
         if user is None:
             self.send_error(403, message='The email address and password are invalid!')
             return
-
+        print(f"xxxx User password check {user['password']} against {password} ")
         if user['password'] != password:
             self.send_error(403, message='The email address and password are invalid!')
             return
