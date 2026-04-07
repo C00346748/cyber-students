@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from tornado.escape import json_decode
 from uuid import uuid4
+import crypto_helper
 
 from .base import BaseHandler
 
@@ -11,7 +12,7 @@ class LoginHandler(BaseHandler):
         expires_in = (datetime.now(timezone.utc) + timedelta(hours=2)).timestamp()
 
         token = {
-            'token': token_uuid,
+            'token': crypto_helper.encrypt_other_string('test@test.com',token_uuid),
             'expiresIn': expires_in,
         }
 
@@ -29,7 +30,7 @@ class LoginHandler(BaseHandler):
             #Remove strip no good with hashes
             email = body['email']
             password = body['password']
-            print(f"####xxxx Body email login is {body['email']}")
+            #print(f"####xxxx Body email login is {body['email']}")
         except Exception:
             self.send_error(400, message='You must provide an email address and password!')
             return
@@ -51,7 +52,7 @@ class LoginHandler(BaseHandler):
         if user is None:
             self.send_error(403, message='The email address and password are invalid!')
             return
-        print(f"xxxx User password check {user['password']} against {password} ")
+        #print(f"xxxx User password check {user['password']} against {password} ")
         if user['password'] != password:
             self.send_error(403, message='The email address and password are invalid!')
             return
@@ -60,6 +61,7 @@ class LoginHandler(BaseHandler):
 
         self.set_status(200)
         self.response['token'] = token['token']
+        #print(f"++++++ Tokens compared {self.response['token']} with {token['token']}")
         self.response['expiresIn'] = token['expiresIn']
 
         self.write_json()

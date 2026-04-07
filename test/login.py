@@ -24,7 +24,7 @@ class LoginHandlerTest(BaseTest):
         await self.get_app().db.users.insert_one({
             'email': self.email,
             'password': self.password,
-            'displayName': 'testDisplayName'
+            'displayName': crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
         })
 
 
