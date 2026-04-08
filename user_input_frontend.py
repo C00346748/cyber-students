@@ -3,6 +3,8 @@ import crypto_helper
 from tornado.web import Application
 from api.handlers.registration import RegistrationHandler
 import subprocess
+import keyring
+from test.conf import MONGO_DB_SERVICE, MONGO_DB_USER, MONGODB_DBNAME
 
 def input_data():
     fullname = input('Please enter your full name: ')
@@ -19,7 +21,7 @@ def limited_data():
     email = input('Please enter your email')
     password = input('Enter your password: ')
     displayName = input('Enter the display name to use')
-
+    crypto_helper.set_salt(email)
     reg_basic_enc(email,password,displayName)
 
 def print_details():
@@ -59,7 +61,7 @@ def reg_basic(email,password,displayName):
 
 
 def reg_basic_enc(email,password,displayName):
-    command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{crypto_helper.encrypt_email(email)}\", \"password\": \"{crypto_helper.encrypt_pwd(password)}\", \"displayName\": \"{crypto_helper.encrypt_other_string(email,displayName)}\"}}"'
+    command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{crypto_helper.encrypt_email(email)}\", \"password\": \"{crypto_helper.encrypt_pwd_new(password,email)}\", \"displayName\": \"{crypto_helper.encrypt_other_string(email,displayName)}\"}}"'
     try:
         run = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
         print("Run: ", run.stdout)
@@ -75,10 +77,10 @@ def register_full(fullname,email,address,dob,phone_number,list_disabilities):
     except subprocess.CalledProcessError as error:
         print("Run error: ", error.stderr) 
 
-def sec_register(fullname,email,address,dob,phone_number,list_disabilities):
-    db_user = "admin"
-    db_pass = "secure_password"
-    command = fr'curl -u "{db_user}:{db_pass}" -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"fullname\": \"{fullname}\", \"address\": \"{address}\", \"dob\": \"{dob}\", \"phone_number\": \"{phone_number}\", \"list_disabilities\": \"{list_disabilities}\"}}"'
+def sec_register_basic(email,password,displayName):
+    db_user = keyring.get_password(MONGO_DB_USER,"None")
+    db_pass = keyring.get_password(MONGO_DB_SERVICE,keyring.get_password(MONGO_DB_USER,"None"))
+    command = fr'curl -u "{db_user}:{db_pass}" -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"password\": \"{password}\", \"displayName\": \"{displayName}\"}}"'
 
 #curl -X POST http://localhost:4000/students/api/registration -d "{\"email\": \"foo@bar.com\", \"password\": \"pass\", \"displayName\": \"Foo Bar\"}"
 #Confifure to run as script

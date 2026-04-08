@@ -32,7 +32,7 @@ def add_pepper(str):
     hash_message.update(message)
     hash_bytes = hash_message.finalize()
     hash_b64 = base64.b64encode(hash_bytes)
-    # Return the peppered password as bytes for the next hashing step
+    # Return the peppered string
     return hash_b64.decode('ascii')
 
 #To use this you need to pass the salt associated with user
@@ -60,7 +60,12 @@ def set_token():
 def encrypt_pwd(user_email):
     set_salt(user_email) #only done if not done already per user email
     email = add_salt_and_pepper(user_email,get_salt(user_email))
-    password = add_salt_and_pepper(keyring.get_password(SERVICE_NAME,hash('test@test.com')),get_salt('test@test.com'))
+    password = add_salt_and_pepper(keyring.get_password(SERVICE_NAME,hash('test@test.com')),get_salt(user_email))
+    return password
+
+def encrypt_pwd_new(password,user_email):
+    set_salt(user_email) #only done if not done already per user email
+    password = add_salt_and_pepper(password,get_salt(user_email))
     return password
 
 def encrypt_email(user_email):
