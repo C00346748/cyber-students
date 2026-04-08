@@ -1,3 +1,7 @@
+import crypto_helper
+from tornado.web import Application
+from api.handlers.registration import RegistrationHandler
+import subprocess
 
 def input_data():
     fullname = input('Please enter your full name: ')
@@ -7,20 +11,75 @@ def input_data():
     phone_number = input('Enter your phone number: ')
     list_disabilities = input('Enter your list of disabilities: ')
     print(fullname + "\n" + address + "\n" + dob + "\n" + phone_number + "\n" + list_disabilities)
+    register_full(fullname,email,address,dob,phone_number,list_disabilities)
+
+def limited_data():
+    email = input('Please enter your email')
+    password = input('Enter your password: ')
+    displayName = input('Enter the display name to use')
+
+    reg_basic_enc(email,password,displayName)
 
 def print_details():
     return None
 
-def register():
-    command_curl = 'curl -X POST http://localhost:4000/students/api/login -d '
-    command_email = '{\"email\": \"foo@bar.com\",'
-    command_password = '\"password\": \"pass\"}"'
-    command_token = '{"token": "68fb2bf3b4dd4f48913d27d4e3220140", "expiresIn": 1774798170.719328}'
-    full_command = command_curl + command_email + command_password + command_token
-    print(full_command)
+async def reg_exe(email,password,displayName):
+    my_app = Application([(r'/registration', RegistrationHandler)])
+    await my_app.db.users.insert_one({
+        'email': email,
+        'password': password,
+        'displayName': displayName
+    })
 
+def reg():
+    my_app = Application([(r'/registration', RegistrationHandler)])
+    email = crypto_helper.encrypt_email('test@test.com')
+    displayName = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
+    #print(f"Salt and peppered display name {display_name}")
+    password = crypto_helper.encrypt_pwd('test@test.com')
+    #print(f"**** Password and Email Reg ****  {email} password {password}")
+    #body dictionary replacing password retrieval with keyring
+    body = {
+        'email': email,
+        'password': password,
+        'displayName': displayName
+    }
+    reg(email,password,displayName)
+    print("Reg of test@test.com")
+
+def reg_basic(email,password,displayName):
+    command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"password\": \"{password}\", \"displayName\": \"{displayName}\"}}"'
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        print("Response:", result.stdout)
+    except subprocess.CalledProcessError as e:
+        print("Error executing command:", e.stderr)    
+
+
+def reg_basic_enc(email,password,displayName):
+    command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{crypto_helper.encrypt_email(email)}\", \"password\": \"{crypto_helper.encrypt_pwd(password)}\", \"displayName\": \"{crypto_helper.encrypt_other_string(email,displayName)}\"}}"'
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        print("Response:", result.stdout)
+    except subprocess.CalledProcessError as e:
+        print("Error executing command:", e.stderr) 
+
+
+def register_full(fullname,email,address,dob,phone_number,list_disabilities):
+    command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"fullname\": \"{fullname}\", \"address\": \"{address}\", \"dob\": \"{dob}\", \"phone_number\": \"{phone_number}\", \"list_disabilities\": \"{list_disabilities}\"}}"'
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        print("Response:", result.stdout)
+    except subprocess.CalledProcessError as e:
+        print("Error executing command:", e.stderr)
+
+def sec_register(fullname,email,address,dob,phone_number,list_disabilities):
+    db_user = "admin"
+    db_pass = "secure_password"
+    command = fr'curl -u "{db_user}:{db_pass}" -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"fullname\": \"{fullname}\", \"address\": \"{address}\", \"dob\": \"{dob}\", \"phone_number\": \"{phone_number}\", \"list_disabilities\": \"{list_disabilities}\"}}"'
+
+#curl -X POST http://localhost:4000/students/api/registration -d "{\"email\": \"foo@bar.com\", \"password\": \"pass\", \"displayName\": \"Foo Bar\"}"
 #Confifure to run as script
 if __name__ == '__main__':
-    input_data()
-    print_details()
-    register()
+    limited_data()
+    #reg()

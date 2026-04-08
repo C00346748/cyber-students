@@ -64,6 +64,7 @@ def encrypt_pwd(user_email):
     return password
 
 def encrypt_email(user_email):
+    set_salt(user_email) #only done if not done already per user email
     email = add_salt_and_pepper(user_email,get_salt(user_email))
     return email
 
