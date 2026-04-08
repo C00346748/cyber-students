@@ -1,3 +1,4 @@
+#Using Curl commands to test the encryption
 import crypto_helper
 from tornado.web import Application
 from api.handlers.registration import RegistrationHandler
@@ -6,13 +7,14 @@ import subprocess
 def input_data():
     fullname = input('Please enter your full name: ')
     email = input('Please enter your email')
-    address = input('Eneter your full address: ')
+    address = input('Enter your full address: ')
     dob = input('Enter your date of birth DD/MM/YYY: ')
     phone_number = input('Enter your phone number: ')
     list_disabilities = input('Enter your list of disabilities: ')
     print(fullname + "\n" + address + "\n" + dob + "\n" + phone_number + "\n" + list_disabilities)
     register_full(fullname,email,address,dob,phone_number,list_disabilities)
 
+#A limited amount of input
 def limited_data():
     email = input('Please enter your email')
     password = input('Enter your password: ')
