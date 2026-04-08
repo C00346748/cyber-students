@@ -50,28 +50,28 @@ def reg():
 def reg_basic(email,password,displayName):
     command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"password\": \"{password}\", \"displayName\": \"{displayName}\"}}"'
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
-        print("Response:", result.stdout)
-    except subprocess.CalledProcessError as e:
-        print("Error executing command:", e.stderr)    
+        run = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        print("Run: ", run.stdout)
+    except subprocess.CalledProcessError as error:
+        print("Run error: ", error.stderr)    
 
 
 def reg_basic_enc(email,password,displayName):
     command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{crypto_helper.encrypt_email(email)}\", \"password\": \"{crypto_helper.encrypt_pwd(password)}\", \"displayName\": \"{crypto_helper.encrypt_other_string(email,displayName)}\"}}"'
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
-        print("Response:", result.stdout)
-    except subprocess.CalledProcessError as e:
-        print("Error executing command:", e.stderr) 
+        run = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        print("Run: ", run.stdout)
+    except subprocess.CalledProcessError as error:
+        print("Run error: ", error.stderr) 
 
 
 def register_full(fullname,email,address,dob,phone_number,list_disabilities):
     command = fr'curl -X POST http://localhost:4000/students/api/registration -d "{{\"email\": \"{email}\", \"fullname\": \"{fullname}\", \"address\": \"{address}\", \"dob\": \"{dob}\", \"phone_number\": \"{phone_number}\", \"list_disabilities\": \"{list_disabilities}\"}}"'
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
-        print("Response:", result.stdout)
-    except subprocess.CalledProcessError as e:
-        print("Error executing command:", e.stderr)
+        run = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        print("Run: ", run.stdout)
+    except subprocess.CalledProcessError as error:
+        print("Run error: ", error.stderr) 
 
 def sec_register(fullname,email,address,dob,phone_number,list_disabilities):
     db_user = "admin"
