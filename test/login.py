@@ -85,7 +85,7 @@ class LoginHandlerTest(BaseTest):
         }
 
         response = self.fetch('/login', method='POST', body=dumps(body))
-        print(f"URL + {response.effective_url}") #should output URL of webserver
+        #print(f"URL + {response.effective_url}") #should output URL of webserver
         self.assertEqual(403, response.code)
 
     #Deliberately sending a wrong password, expects fail 403
