@@ -34,10 +34,20 @@ class RegistrationHandlerTest(BaseTest):
         password = crypto_helper.encrypt_pwd('test@test.com')
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
+        fullname = crypto_helper.encrypt_other_string('test@test.com','x')
+        address = crypto_helper.encrypt_other_string('test@test.com','x')
+        dob = crypto_helper.encrypt_other_string('test@test.com','x')
+        phone_number = crypto_helper.encrypt_other_string('test@test.com','x')
+        list_disabilities = crypto_helper.encrypt_other_string('test@test.com','x')
         body = {
           'email': email,
           'password': password,
-          'displayName': display_name
+          'displayName': display_name,
+          'fullname' : fullname,
+          'address': address,
+          'dob': dob,
+          'phone_number': phone_number,
+          'list_disabilities': list_disabilities
         }
         #print(f"**** {body['email']}")
 
@@ -53,10 +63,22 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration_without_display_name(self):
         email = crypto_helper.encrypt_email('test@test.com')
         password = crypto_helper.encrypt_pwd('test@test.com')
+        #print(f"**** Password and Email Reg ****  {email} password {password}")
+        #body dictionary replacing password retrieval with keyring
+        fullname = crypto_helper.encrypt_other_string('test@test.com','x')
+        address = crypto_helper.encrypt_other_string('test@test.com','x')
+        dob = crypto_helper.encrypt_other_string('test@test.com','x')
+        phone_number = crypto_helper.encrypt_other_string('test@test.com','x')
+        list_disabilities = crypto_helper.encrypt_other_string('test@test.com','x')
 
         body = {
           'email': email,
-          'password': password
+          'password': password,
+          'fullname' : fullname,
+          'address': address,
+          'dob': dob,
+          'phone_number': phone_number,
+          'list_disabilities': list_disabilities
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))
@@ -77,11 +99,24 @@ class RegistrationHandlerTest(BaseTest):
         #print("Password in test without display name " + password)
         #body dictionary replacing password retrieval with keyring
         display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
+        password = crypto_helper.encrypt_pwd('test@test.com')
+        #print(f"**** Password and Email Reg ****  {email} password {password}")
+        #body dictionary replacing password retrieval with keyring
+        fullname = crypto_helper.encrypt_other_string('test@test.com','x')
+        address = crypto_helper.encrypt_other_string('test@test.com','x')
+        dob = crypto_helper.encrypt_other_string('test@test.com','x')
+        phone_number = crypto_helper.encrypt_other_string('test@test.com','x')
+        list_disabilities = crypto_helper.encrypt_other_string('test@test.com','x')
 
         body = {
           'email': email,
           'password': password,
-          'displayName': display_name
+          'displayName': display_name,
+          'fullname' : fullname,
+          'address': address,
+          'dob': dob,
+          'phone_number': phone_number,
+          'list_disabilities': list_disabilities
         }
 
         response = self.fetch('/registration', method='POST', body=dumps(body))

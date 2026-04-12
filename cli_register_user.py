@@ -2,8 +2,9 @@ from json import dumps
 from tornado.escape import json_decode
 from tornado.ioloop import IOLoop
 from tornado.web import Application
-from test.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS
+from test.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST
 from tornado.testing import AsyncHTTPTestCase
+from motor.motor_tornado import MotorClient
 
 from concurrent.futures import ThreadPoolExecutor
 from mongomock_motor import AsyncMongoMockClient
@@ -21,8 +22,6 @@ from api.handlers.registration import RegistrationHandler
 import urllib.parse
 
 
-
-
 #Sends reg request to webserver
 async def cli_registration():
     tracemalloc.start()
@@ -30,11 +29,18 @@ async def cli_registration():
     email_in = input('Please enter your email: ')
     password_in = pwinput.pwinput('Enter your password: ')
     display_name_in = input('Enter the display name to use: ')
+    full_name_in = input('Enter your full name: ')
+    address_in = input('Enter your full address: ')
+    dob_in = input('Enter your date of birth DD/MM/YYY: ')
+    phone_number_in = input('Enter your phone number: ')
+    list_disabilities_in = input('Enter your list of disabilities: ')
 
-    my_app = Application([(r'/registration', RegistrationHandler)])
+
+
+    #my_app = Application([(r'/registration', RegistrationHandler)])
     
-    my_app.db = AsyncMongoMockClient()[MONGODB_DBNAME]
-    my_app.executor = ThreadPoolExecutor(WORKERS)
+    #my_app.db = AsyncMongoMockClient()[MONGODB_DBNAME]
+    #my_app.executor = ThreadPoolExecutor(WORKERS)
     
     email = crypto_helper.encrypt_email(email_in)
     display_name = crypto_helper.encrypt_other_string(email_in,display_name_in)
@@ -42,11 +48,23 @@ async def cli_registration():
     password = crypto_helper.encrypt_pwd_new(password_in,email_in)
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
+    fullname = crypto_helper.encrypt_other_string(email_in,full_name_in)
+    address = crypto_helper.encrypt_other_string(email_in,address_in)
+    dob = crypto_helper.encrypt_other_string(email_in,dob_in)
+    phone_number = crypto_helper.encrypt_other_string(email_in,phone_number_in)
+    list_disabilities = crypto_helper.encrypt_other_string(email_in,list_disabilities_in)
+
     body = {
         'email': email,
         'password': password,
-        'displayName': display_name
+        'displayName': display_name,
+        'fullname' : fullname,
+        'address': address,
+        'dob': dob,
+        'phone_number': phone_number,
+        'list_disabilities': list_disabilities
     }
+
     #print(f"**** {body['email']}")
     http_client = AsyncHTTPClient()
     url = "http://localhost:4000/students/api/registration"

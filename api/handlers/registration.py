@@ -11,6 +11,12 @@ class RegistrationHandler(BaseHandler):
             email = body['email']
             password = body['password']
             display_name = body.get('displayName')
+            fullname = body.get('fullname')
+            address = body.get('address')
+            dob = body.get('dob')
+            phone_number = body.get('phone_number')
+            list_disabilities = body.get('list_disabilities')
+            print("#### Reg is called ####")
             if display_name is None:
                 display_name = email
             if not isinstance(display_name, str):
@@ -30,7 +36,27 @@ class RegistrationHandler(BaseHandler):
         if not display_name:
             self.send_error(400, message='The display name is invalid!')
             return
+        
+        if not fullname:
+            self.send_error(400, message='The full name is invalid!')
+            return        
 
+        if not address:
+            self.send_error(400, message='The full name is invalid!')
+            return          
+        
+        if not dob:
+            self.send_error(400, message='The full name is invalid!')
+            return 
+        
+        if not phone_number:
+            self.send_error(400, message='The full name is invalid!')
+            return
+        
+        if not list_disabilities:
+            self.send_error(400, message='The full name is invalid!')
+            return       
+         
         user = await self.db.users.find_one({
           'email': email
         })
@@ -42,7 +68,12 @@ class RegistrationHandler(BaseHandler):
         await self.db.users.insert_one({
             'email': email,
             'password': password,
-            'displayName': display_name
+            'displayName': display_name,
+            'fullname': fullname,
+            'address': address,
+            'dob': dob,
+            'phone_number': phone_number,
+            'list_disabilities': list_disabilities
         })
 
         self.set_status(200)
