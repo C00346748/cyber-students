@@ -124,3 +124,4 @@ class RegistrationHandlerTest(BaseTest):
 
         response_2 = self.fetch('/registration', method='POST', body=dumps(body))
         self.assertEqual(409, response_2.code)
+        

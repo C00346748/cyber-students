@@ -21,6 +21,8 @@ async def get_users(db):
     'fullname': 1,
     'address': 1,
     'dob': 1,
+    'phone_number': 1,
+    'list_disabilities': 1,
     'token': 1,
     'expiresIn': 1,
   })

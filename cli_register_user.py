@@ -16,6 +16,7 @@ import crypto_helper
 import asyncio
 import tracemalloc
 import pwinput
+import base64
 
 from api.handlers.registration import RegistrationHandler
 
@@ -43,8 +44,8 @@ async def cli_registration():
     #my_app.executor = ThreadPoolExecutor(WORKERS)
     
     email = crypto_helper.encrypt_email(email_in)
-    display_name = crypto_helper.encrypt_other_string(email_in,display_name_in)
-    #print(f"Salt and peppered display name {display_name}")
+    display_name = aes_encrypt_decrypt.encrypt_aes_string(display_name_in)
+    print(f"Display name {aes_encrypt_decrypt.decrypt_aes_string(display_name)}")
     password = crypto_helper.encrypt_pwd_new(password_in,email_in)
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
