@@ -17,6 +17,7 @@ async def get_users(db):
   cur = db.users.find({}, {
     'email': 1,
     'password': 1,
+    'salt': 1,
     'displayName': 1,
     'fullname': 1,
     'address': 1,

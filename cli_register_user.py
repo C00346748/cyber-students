@@ -2,7 +2,7 @@ from json import dumps
 from tornado.escape import json_decode
 from tornado.ioloop import IOLoop
 from tornado.web import Application
-from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_URL
+from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_URL, TEMP_SALT
 from tornado.testing import AsyncHTTPTestCase
 from motor.motor_tornado import MotorClient
 
@@ -42,11 +42,11 @@ async def cli_registration():
     
     #my_app.db = AsyncMongoMockClient()[MONGODB_DBNAME]
     #my_app.executor = ThreadPoolExecutor(WORKERS)
-    
     email = crypto_helper.encrypt_email(email_in)
     display_name = aes_encrypt_decrypt.encrypt_aes_string(display_name_in)
     print(f"Display name {aes_encrypt_decrypt.decrypt_aes_string(display_name)}")
     password = crypto_helper.encrypt_pwd_new(password_in,email_in)
+    salt = TEMP_SALT
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
     fullname = crypto_helper.encrypt_other_string(email_in,full_name_in)
@@ -58,6 +58,7 @@ async def cli_registration():
     body = {
         'email': email,
         'password': password,
+        'salt':salt,
         'displayName': display_name,
         'fullname' : fullname,
         'address': address,

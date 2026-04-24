@@ -1,10 +1,13 @@
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+
 import keyring
-from test.conf import PEPPER, SERVICE_NAME
+from api.conf import PEPPER, SERVICE_NAME, TEMP_SALT
 import base64
 import os
 
+#SHA3 was considered but probably overkill
 def test_sha3():
     digest = hashes.Hash(hashes.SHA3_256())
     message = b"test@test.com"
@@ -25,7 +28,7 @@ def hash(str):
     message_base64 = base64.b64encode(hash_message)
     return  message_base64.decode('ascii') #return the hash in ascii
 
-#Using HMAC (Hash-based Message authentication)
+#Pepper passed str, return string, using HMAC (Hash-based Message authentication)
 def add_pepper(str):
     #bytes
     message = str.encode('utf-8')
@@ -43,6 +46,17 @@ def add_salt_and_pepper(str,salt):
     salted_and_peppered = salt_64.decode('ascii') + hash(str) + add_pepper(str)
     return salted_and_peppered
 
+#Passphrase should arrive pre-peppered
+def add_salt(passphrase):
+    salt = os.urandom(16)
+    TEMP_SALT = salt.decode('utf-8')
+    print(f"Salt is {TEMP_SALT}")
+    passphrase_bytes = bytes(passphrase, "utf-8")
+    kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+    #Hash the passphrase
+    hashed_passphrase = kdf.derive(passphrase_bytes)
+    return hashed_passphrase
+    
 def set_salt(user):
     #Will be sent to the database
     base64_rand = base64.b64encode(os.urandom(32))

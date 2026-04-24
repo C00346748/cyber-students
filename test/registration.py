@@ -2,7 +2,7 @@ from json import dumps
 from tornado.escape import json_decode
 from tornado.ioloop import IOLoop
 from tornado.web import Application
-from .conf import SERVICE_NAME
+from .conf import SERVICE_NAME, TEMP_SALT
 
 import keyring
 import aes_encrypt_decrypt
@@ -32,6 +32,7 @@ class RegistrationHandlerTest(BaseTest):
         display_name = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
         #print(f"Salt and peppered display name {display_name}")
         password = crypto_helper.encrypt_pwd('test@test.com')
+        salt='one'
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = crypto_helper.encrypt_other_string('test@test.com','x')
@@ -42,6 +43,7 @@ class RegistrationHandlerTest(BaseTest):
         body = {
           'email': email,
           'password': password,
+          'salt': salt,
           'displayName': display_name,
           'fullname' : fullname,
           'address': address,
@@ -63,6 +65,7 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration_without_display_name(self):
         email = crypto_helper.encrypt_email('test@test.com')
         password = crypto_helper.encrypt_pwd('test@test.com')
+        salt = 'one'
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = crypto_helper.encrypt_other_string('test@test.com','x')
@@ -74,6 +77,7 @@ class RegistrationHandlerTest(BaseTest):
         body = {
           'email': email,
           'password': password,
+          'salt':salt,
           'fullname' : fullname,
           'address': address,
           'dob': dob,
@@ -100,6 +104,7 @@ class RegistrationHandlerTest(BaseTest):
         #body dictionary replacing password retrieval with keyring
         display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
         password = crypto_helper.encrypt_pwd('test@test.com')
+        salt='one'
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = crypto_helper.encrypt_other_string('test@test.com','x')
@@ -111,6 +116,7 @@ class RegistrationHandlerTest(BaseTest):
         body = {
           'email': email,
           'password': password,
+          'salt': salt,
           'displayName': display_name,
           'fullname' : fullname,
           'address': address,

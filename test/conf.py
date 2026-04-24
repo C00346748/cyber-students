@@ -5,6 +5,13 @@ SERVICE_NAME = 'key_db'
 PUB_KEY = keyring.get_password("hash_pub","None")
 PRV_KEY = keyring.get_password("hash_prv","None")
 
+#PARAMS FOR SALT
+TEMP_SALT = ''
+SALT_LENGTH = 32 #Length of derived key
+SALT_N = 2**14 #CPU\Memory 16,384
+SALT_R = 8 #Block Size
+SALT_P = 1 #Parallelism
+
 PEPPER = keyring.get_password("pepper_student_app","None")
 
 PORT = 4000
