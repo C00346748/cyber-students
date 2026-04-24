@@ -7,6 +7,7 @@ from .conf import SERVICE_NAME
 import keyring
 import aes_encrypt_decrypt
 import crypto_helper
+import os
 
 from api.handlers.registration import RegistrationHandler
 
@@ -29,8 +30,9 @@ class RegistrationHandlerTest(BaseTest):
         email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
         display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
         #print(f"Salt and peppered display name {display_name}")
-        password = 'two'
-        salt='one'
+        list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
+        password = list[0]
+        salt = list[1]
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = aes_encrypt_decrypt.encrypt_aes_string('x')
@@ -62,8 +64,9 @@ class RegistrationHandlerTest(BaseTest):
 
     def test_registration_without_display_name(self):
         email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
-        password = 'two'
-        salt = 'one'
+        list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
+        password = list[0]
+        salt = list[1]
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = aes_encrypt_decrypt.encrypt_aes_string('x')
@@ -97,11 +100,12 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration_twice(self):
         email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
         #print("Email in test without display name " + email)
-        password = 'testPassword'
+        list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
+        password = list[0]
+        salt = list[1]
         #print("Password in test without display name " + password)
         #body dictionary replacing password retrieval with keyring
         display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
-        salt='one'
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = aes_encrypt_decrypt.encrypt_aes_string('x')

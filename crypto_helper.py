@@ -24,9 +24,21 @@ def add_salt(passphrase):
     salt = os.urandom(16)
     salt_64 = base64.b64encode(salt)
     TEMP_SALT = salt_64.decode('ascii')
-    print(f"Salt is {TEMP_SALT}")
+    #print(f"Salt is {TEMP_SALT}")
     passphrase_bytes = bytes(passphrase, "utf-8")
     kdf = Scrypt(salt=salt, length=SALT_LENGTH, n=SALT_N, r=SALT_R, p=SALT_P)
+    #Hash the passphrase
+    hashed_passphrase = kdf.derive(passphrase_bytes)
+    hashed_passphrase_base64 = base64.b64encode(hashed_passphrase)
+    #Need peppered passphrase and salt returned
+    return [hashed_passphrase_base64.decode('ascii'),TEMP_SALT]
+
+def un_salt(passphrase,salt):
+    salt_64 = salt
+    TEMP_SALT = base64.b64decode(salt_64)
+    #print(f"Salt is {TEMP_SALT}")
+    passphrase_bytes = bytes(passphrase, "utf-8")
+    kdf = Scrypt(salt=TEMP_SALT, length=SALT_LENGTH, n=SALT_N, r=SALT_R, p=SALT_P)
     #Hash the passphrase
     hashed_passphrase = kdf.derive(passphrase_bytes)
     hashed_passphrase_base64 = base64.b64encode(hashed_passphrase)

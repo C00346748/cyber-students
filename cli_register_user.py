@@ -39,12 +39,7 @@ async def cli_registration():
     phone_number = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your phone number: '))
     list_disabilities = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your list of disabilities: '))
 
-    #my_app = Application([(r'/registration', RegistrationHandler)])
-    
-    #my_app.db = AsyncMongoMockClient()[MONGODB_DBNAME]
-    #my_app.executor = ThreadPoolExecutor(WORKERS)
-
-    print("*** " + salt + " passphrase " + password)
+    print("CLI REG *** " + salt + " passphrase " + password)
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
 

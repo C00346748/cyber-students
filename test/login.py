@@ -33,7 +33,9 @@ class LoginHandlerTest(BaseTest):
 
         #This is raw text would need to change
         self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
-        self.password = 'testPassword'
+        list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
+        salt = list[1]
+        self.password = list[0]
         self.displayName =  aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
 
         IOLoop.current().run_sync(self.register)

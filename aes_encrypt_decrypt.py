@@ -9,8 +9,8 @@ import base64
 
 padder = padding.PKCS7(algorithms.AES.block_size).padder()
 unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
-ENC_KEY = os.urandom(16)
-ENC_IV = os.urandom(16)
+ENC_KEY = b'\x9f\x8e\x12\xbc\x07\x01\x1e\x88\xbd\x98k\x15\xae\x84~\xbf'
+ENC_IV = b'\x9f\x8e\x12\xbc\x07\x01\x1e\x88\xbd\x98k\x15\xae\x84~\xbf'
 
 def encrypt(P):
     #key = 128 bit (16 bytes) key

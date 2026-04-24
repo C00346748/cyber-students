@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from tornado.escape import json_decode
 from uuid import uuid4
-import crypto_helper
+import aes_encrypt_decrypt
 
 from .base import BaseHandler
 
@@ -12,7 +12,8 @@ class LoginHandler(BaseHandler):
         expires_in = (datetime.now(timezone.utc) + timedelta(hours=2)).timestamp()
 
         token = {
-            'token': token_uuid,
+            #Should I have encrypted this?...not sure it was necessary
+            'token': aes_encrypt_decrypt.encrypt_aes_string(token_uuid),
             'expiresIn': expires_in,
         }
 
@@ -29,6 +30,7 @@ class LoginHandler(BaseHandler):
             body = json_decode(self.request.body)
             #Remove strip no good with hashes
             email = body['email']
+            print("***** POST Login Req **** Email " + email)
             password = body['password']
             #print(f"####xxxx Body email login is {body['email']}")
         except Exception:

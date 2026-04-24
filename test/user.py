@@ -52,17 +52,14 @@ class UserHandlerTest(BaseTest):
     #Sets up user and calls proc to register and login
     def setUp(self):
         super().setUp()
-        #password = aes_encrypt_decrypt.decrypt(self.email).decode("utf-8")
-        #keyring should be added here add tokens
-        
-        ### HASH HERE
-        
-        #These are all hashed
+
         self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
-        #print(f"**** USER *** email hashed to ascii: {self.email}")
-        self.password = 'testPassword'
+        
+        list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
+        salt = list[1] #Not using salt yet
+        self.password = list[0]
         self.display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
-        self.token = 'testToken'
+        self.token = aes_encrypt_decrypt.encrypt_aes_string('testToken')
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
