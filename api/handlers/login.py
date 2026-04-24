@@ -12,7 +12,7 @@ class LoginHandler(BaseHandler):
         expires_in = (datetime.now(timezone.utc) + timedelta(hours=2)).timestamp()
 
         token = {
-            'token': crypto_helper.encrypt_other_string('test@test.com',token_uuid),
+            'token': token_uuid,
             'expiresIn': expires_in,
         }
 
@@ -42,7 +42,7 @@ class LoginHandler(BaseHandler):
         if not password:
             self.send_error(400, message='The password is invalid!')
             return
-        #Something might need to change here, passing '1' as password???
+        
         user = await self.db.users.find_one({
           'email': email
         }, {

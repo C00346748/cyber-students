@@ -97,11 +97,10 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration_twice(self):
         email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
         #print("Email in test without display name " + email)
-        password = 'two'
+        password = 'testPassword'
         #print("Password in test without display name " + password)
         #body dictionary replacing password retrieval with keyring
-        display_name = crypto_helper.add_salt_and_pepper('testDisplayName',crypto_helper.get_salt('test@test.com'))
-        password = 'two'
+        display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
         salt='one'
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring

@@ -32,11 +32,9 @@ class LoginHandlerTest(BaseTest):
         super().setUp()
 
         #This is raw text would need to change
-        #Trial 1: Going to replace this with key ring password, no token yet
-        #The test still passed using keyring
-        self.email = crypto_helper.encrypt_email('test@test.com')
-        self.password = crypto_helper.encrypt_pwd('test@test.com')
-        self.displayName = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
+        self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        self.password = 'testPassword'
+        self.displayName =  aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
 
         IOLoop.current().run_sync(self.register)
 

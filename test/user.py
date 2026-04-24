@@ -31,14 +31,14 @@ class UserHandlerTest(BaseTest):
             'password': self.password,
             'displayName': self.display_name
         })
-        print(f"Set user: {self.email}") #Some prints to verify functions
-        print(f"Password user: {self.password}") #Some prints to verify functions
-        print(f"Display Name: {self.display_name}") #Some prints to verify functions
+        #print(f"Set user: {self.email}") #Some prints to verify functions
+        #print(f"Password user: {self.password}") #Some prints to verify functions
+        #print(f"Display Name: {self.display_name}") #Some prints to verify functions
          
         #print(f"Set user: {self.password}")
         #print(f"Set user: {self.display_name}")
         
-        print('Hash**')
+        #print('Hash**')
 
     #Gets the database connection via webserver and calls update
     #Setting token on the user
@@ -58,12 +58,10 @@ class UserHandlerTest(BaseTest):
         ### HASH HERE
         
         #These are all hashed
-        self.email = 'test@test.com'
-        crypto_helper.set_salt('test@test.com')
-        self.email = crypto_helper.encrypt_email('test@test.com')
-        print(f"**** USER *** email hashed to ascii: {self.email}")
-        self.password = crypto_helper.encrypt_pwd('test@test.com')
-        self.display_name = crypto_helper.encrypt_other_string('test@test.com','testDisplayName')
+        self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        #print(f"**** USER *** email hashed to ascii: {self.email}")
+        self.password = 'testPassword'
+        self.display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
         self.token = 'testToken'
 
         IOLoop.current().run_sync(self.register)

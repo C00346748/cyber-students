@@ -6,7 +6,7 @@ from tornado.web import Application
 from .conf import SERVICE_NAME
 
 import keyring
-import crypto_helper
+import aes_encrypt_decrypt
 
 
 from api.handlers.logout import LogoutHandler
@@ -39,9 +39,9 @@ class LogoutHandlerTest(BaseTest):
     def setUp(self):
         super().setUp()
         #Use of raw password replaced with keyring
-        self.email = crypto_helper.encrypt_email('test@test.com')
-        self.password = crypto_helper.encrypt_pwd('testPassword')
-        self.token = crypto_helper.encrypt_other_string('test@test.com','testToken')
+        self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        self.password = 'testPassword'
+        self.token = aes_encrypt_decrypt.encrypt_aes_string('testToken')
 
         IOLoop.current().run_sync(self.register)
         IOLoop.current().run_sync(self.login)
