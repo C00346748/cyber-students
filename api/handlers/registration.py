@@ -17,7 +17,6 @@ class RegistrationHandler(BaseHandler):
             dob = body.get('dob')
             phone_number = body.get('phone_number')
             list_disabilities = body.get('list_disabilities')
-            print("#### Reg is called ####")
             if display_name is None:
                 display_name = email
             if not isinstance(display_name, str):

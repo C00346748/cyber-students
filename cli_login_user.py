@@ -25,10 +25,9 @@ async def cli_login():
             'salt': 1
         })
         salt = user_salt['salt']
-    except: #Will stop a load of ugly errors from the server
-        print("Client error with login")
-
-    if salt is not None:
+    except:
+        pass #Don't want to give a clue that username is wrong
+    try: #Separate try to avoid all the server error messages showing giving error details
         unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')),salt)
 
         body = {
@@ -50,12 +49,12 @@ async def cli_login():
         print(f"Server response {response.code}")
         body = json_decode(response.body)
         print(body['message'])
+    except:
+        print("Error with login")
 
 async def welcome():
     http_client = AsyncHTTPClient()
     url = BASE_URL + "api/"
-    #Send request to registration handler
-    #response = my_app.start_request('/registration', method='POST', body=dumps(body))
     
     response = await http_client.fetch(
         url,
@@ -65,7 +64,7 @@ async def welcome():
     body = json_decode(response.body)
     print(body['message'])
 
-    #Configure to run as script
+#Configure to run as script
 if __name__ == '__main__':
     asyncio.run(welcome())
     asyncio.run(cli_login())
