@@ -9,7 +9,7 @@ import base64
 
 padder = padding.PKCS7(algorithms.AES.block_size).padder()
 unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
-ENC_KEY = b'\x9f\x8e\x12\xbc\x07\x01\x1e\x88\xbd\x98k\x15\xae\x84~\xbf'
+ENC_KEY = bytes(keyring.get_password("aes","enc_key"),"utf-8")
 ENC_IV = b'\x9f\x8e\x12\xbc\x07\x01\x1e\x88\xbd\x98k\x15\xae\x84~\xbf'
 
 def encrypt(P):
