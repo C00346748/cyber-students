@@ -13,39 +13,43 @@ from motor.motor_tornado import MotorClient
 async def cli_login():
     email = aes_encrypt_decrypt.encrypt_aes_string(input('Please enter your email: '))
     #email_in = input('Please enter your email: ')
-    
+    salt = None
     #get the salt from the database and combine with password
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 
     #Get salt from the DB to season the password entered
-    user_salt = await db.users.find_one({
-        'email': email
-    }, {
-        'salt': 1
-    })
-    salt = user_salt['salt']
+    try:
+        user_salt = await db.users.find_one({
+            'email': email
+        }, {
+            'salt': 1
+        })
+        salt = user_salt['salt']
+    except: #Will stop a load of ugly errors from the server
+        print("Client error with login")
 
-    unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')),salt)
+    if salt is not None:
+        unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')),salt)
 
-    body = {
-        'email': email,
-        'password': unsalt_pwd
-    }
+        body = {
+            'email': email,
+            'password': unsalt_pwd
+        }
 
-    http_client = AsyncHTTPClient()
-    url = BASE_URL + "api/login"
-    #Send request to registration handler
-    #response = my_app.start_request('/registration', method='POST', body=dumps(body))
-    
-    response = await http_client.fetch(
-        url,
-        method="POST",
-        body=dumps(body),
-        headers={"Content-Type": "application/json"}
-    )
-    print(f"Server response {response.code}")
-    body = json_decode(response.body)
-    print(body['message'])
+        http_client = AsyncHTTPClient()
+        url = BASE_URL + "api/login"
+        #Send request to registration handler
+        #response = my_app.start_request('/registration', method='POST', body=dumps(body))
+        
+        response = await http_client.fetch(
+            url,
+            method="POST",
+            body=dumps(body),
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"Server response {response.code}")
+        body = json_decode(response.body)
+        print(body['message'])
 
 async def welcome():
     http_client = AsyncHTTPClient()
