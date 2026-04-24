@@ -13,7 +13,6 @@ from motor.motor_tornado import MotorClient
 async def cli_login():
     email = aes_encrypt_decrypt.encrypt_aes_string(input('Please enter your email: '))
     #email_in = input('Please enter your email: ')
-    password = pwinput.pwinput('Enter your password: ')
     
     #get the salt from the database and combine with password
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
@@ -26,7 +25,7 @@ async def cli_login():
     })
     salt = user_salt['salt']
 
-    unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(password),salt)
+    unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')),salt)
 
     body = {
         'email': email,
@@ -45,6 +44,8 @@ async def cli_login():
         headers={"Content-Type": "application/json"}
     )
     print(f"Server response {response.code}")
+    body = json_decode(response.body)
+    print(body['message'])
 
 async def welcome():
     http_client = AsyncHTTPClient()

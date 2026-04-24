@@ -65,5 +65,6 @@ class LoginHandler(BaseHandler):
         self.response['token'] = token['token']
         #print(f"++++++ Tokens compared {self.response['token']} with {token['token']}")
         self.response['expiresIn'] = token['expiresIn']
+        self.response['message'] = 'Login Successful!'
 
         self.write_json()
