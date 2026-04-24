@@ -33,7 +33,7 @@ def add_salt(passphrase):
     #Need peppered passphrase and salt returned
     return [hashed_passphrase_base64.decode('ascii'),TEMP_SALT]
 
-def re_season(passphrase,salt):
+def season(passphrase,salt):
     salt_64 = salt
     TEMP_SALT = base64.b64decode(salt_64)
     #print(f"Salt is {TEMP_SALT}")

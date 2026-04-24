@@ -18,6 +18,7 @@ async def cli_login():
     #get the salt from the database and combine with password
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 
+    #Get salt from the DB to season the password entered
     user_salt = await db.users.find_one({
         'email': email
     }, {
@@ -25,14 +26,7 @@ async def cli_login():
     })
     salt = user_salt['salt']
 
-    user_password = await db.users.find_one({
-        'email': email
-    }, {
-        'password': 1
-    })
-    password_db = user_password['password']
-
-    unsalt_pwd = crypto_helper.re_season(crypto_helper.add_pepper(password),salt)
+    unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(password),salt)
 
     body = {
         'email': email,
