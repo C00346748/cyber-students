@@ -33,7 +33,7 @@ def add_salt(passphrase):
     #Need peppered passphrase and salt returned
     return [hashed_passphrase_base64.decode('ascii'),TEMP_SALT]
 
-def un_salt(passphrase,salt):
+def re_season(passphrase,salt):
     salt_64 = salt
     TEMP_SALT = base64.b64decode(salt_64)
     #print(f"Salt is {TEMP_SALT}")
@@ -43,4 +43,4 @@ def un_salt(passphrase,salt):
     hashed_passphrase = kdf.derive(passphrase_bytes)
     hashed_passphrase_base64 = base64.b64encode(hashed_passphrase)
     #Need peppered passphrase and salt returned
-    return [hashed_passphrase_base64.decode('ascii'),TEMP_SALT]
+    return hashed_passphrase_base64.decode('ascii')

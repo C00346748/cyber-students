@@ -17,25 +17,6 @@ async def cli_login():
     
     #get the salt from the database and combine with password
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
-    print(email)
-    cur = db.users.find({}, {
-        'email': 1,
-        'password': 1,
-        'salt': 1,
-        'displayName': 1,
-        'fullname': 1,
-        'address': 1,
-        'dob': 1,
-        'phone_number': 1,
-        'list_disabilities': 1,
-        'token': 1,
-        'expiresIn': 1,
-    })
-    docs = await cur.to_list(length=None)
-    for doc in docs:
-        click.echo(doc)
-    
-    print("Next")
 
     user_salt = await db.users.find_one({
         'email': email
@@ -43,20 +24,33 @@ async def cli_login():
         'salt': 1
     })
     salt = user_salt['salt']
-    print(salt)
 
     user_password = await db.users.find_one({
         'email': email
     }, {
         'password': 1
     })
-    password_out = user_password['password']
-    print(password_out)
+    password_db = user_password['password']
 
-    unsalt_pwd = crypto_helper.un_salt(crypto_helper.add_pepper(password),salt)
-    print(unsalt_pwd[0])
-    if(password==password):
-        print("Password match")
+    unsalt_pwd = crypto_helper.re_season(crypto_helper.add_pepper(password),salt)
+
+    body = {
+        'email': email,
+        'password': unsalt_pwd
+    }
+
+    http_client = AsyncHTTPClient()
+    url = BASE_URL + "api/login"
+    #Send request to registration handler
+    #response = my_app.start_request('/registration', method='POST', body=dumps(body))
+    
+    response = await http_client.fetch(
+        url,
+        method="POST",
+        body=dumps(body),
+        headers={"Content-Type": "application/json"}
+    )
+    print(f"Server response {response.code}")
 
 async def welcome():
     http_client = AsyncHTTPClient()
