@@ -25,10 +25,12 @@ def hash(str):
     message_base64 = base64.b64encode(hash_message)
     return  message_base64.decode('ascii') #return the hash in ascii
 
+#Using HMAC (Hash-based Message authentication)
 def add_pepper(str):
+    #bytes
     message = str.encode('utf-8')
     #Hash-based Message Authentication Code
-    hash_message = hmac.HMAC(PEPPER.encode('utf-8'), hashes.SHA3_256(), backend=default_backend())
+    hash_message = hmac.HMAC(PEPPER.encode('utf-8'), hashes.SHA256(), backend=default_backend())
     hash_message.update(message)
     hash_bytes = hash_message.finalize()
     hash_b64 = base64.b64encode(hash_bytes)

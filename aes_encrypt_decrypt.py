@@ -77,8 +77,11 @@ def decrypt_aes_string(ciphertext):
     unpadder = padding.PKCS7(128).unpadder()
 
     plain_bytes = unpadder.update(padded_data) + unpadder.finalize()
+    #Gave back plain bytes...converting to base 64
     plain_64 = base64.b64encode(plain_bytes)
+    #Converting the base 64 to base 64 string
     plain_text = plain_64.decode('ascii')
+    #change the base 64 string to acsii string for return
     plain_string = base64.b64decode(plain_text).decode('utf-8')
 
     return plain_string
