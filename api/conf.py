@@ -19,7 +19,6 @@ MONGODB_DBNAME = 'cyberStudents'
 WORKERS = 32
 
 #PARAMS FOR SALT
-TEMP_SALT = 'one'
 SALT_LENGTH = 32 #Length of derived key
 SALT_N = 2**14 #CPU\Memory 16,384
 SALT_R = 8 #Block Size

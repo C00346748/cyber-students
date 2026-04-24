@@ -2,7 +2,7 @@ from json import dumps
 from tornado.escape import json_decode
 from tornado.ioloop import IOLoop
 from tornado.web import Application
-from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_URL, TEMP_SALT
+from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_URL
 from tornado.testing import AsyncHTTPTestCase
 from motor.motor_tornado import MotorClient
 
@@ -27,33 +27,26 @@ import urllib.parse
 async def cli_registration():
     tracemalloc.start()
     print(f"*** Calling reg ***:")
-    email_in = input('Please enter your email: ')
-    password_in = pwinput.pwinput('Enter your password: ')
-    display_name_in = input('Enter the display name to use: ')
-    full_name_in = input('Enter your full name: ')
-    address_in = input('Enter your full address: ')
-    dob_in = input('Enter your date of birth DD/MM/YYY: ')
-    phone_number_in = input('Enter your phone number: ')
-    list_disabilities_in = input('Enter your list of disabilities: ')
-
-
+    email = aes_encrypt_decrypt.encrypt_aes_string(input('Please enter your email: '))
+    #email_in = input('Please enter your email: ')
+    list = crypto_helper.add_salt(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')))
+    password = list[0]
+    salt = list[1]
+    display_name = aes_encrypt_decrypt.encrypt_aes_string(input('Enter the display name to use: '))
+    fullname = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full name: '))
+    address = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full address: '))
+    dob = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your date of birth DD/MM/YYY: ')) 
+    phone_number = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your phone number: '))
+    list_disabilities = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your list of disabilities: '))
 
     #my_app = Application([(r'/registration', RegistrationHandler)])
     
     #my_app.db = AsyncMongoMockClient()[MONGODB_DBNAME]
     #my_app.executor = ThreadPoolExecutor(WORKERS)
-    email = crypto_helper.encrypt_email(email_in)
-    display_name = aes_encrypt_decrypt.encrypt_aes_string(display_name_in)
-    print(f"Display name {aes_encrypt_decrypt.decrypt_aes_string(display_name)}")
-    password = crypto_helper.encrypt_pwd_new(password_in,email_in)
-    salt = TEMP_SALT
+
+    print("*** " + salt + " passphrase " + password)
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
-    fullname = crypto_helper.encrypt_other_string(email_in,full_name_in)
-    address = crypto_helper.encrypt_other_string(email_in,address_in)
-    dob = crypto_helper.encrypt_other_string(email_in,dob_in)
-    phone_number = crypto_helper.encrypt_other_string(email_in,phone_number_in)
-    list_disabilities = crypto_helper.encrypt_other_string(email_in,list_disabilities_in)
 
     body = {
         'email': email,
