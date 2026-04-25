@@ -28,6 +28,7 @@ class RegistrationHandlerTest(BaseTest):
     def test_registration(self):
         #print(f"Salt for user:  {crypto_helper.get_salt('test@test.com')}")
         email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        #Add IV later
         display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
         #print(f"Salt and peppered display name {display_name}")
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))

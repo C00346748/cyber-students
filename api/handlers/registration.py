@@ -9,6 +9,7 @@ class RegistrationHandler(BaseHandler):
             body = json_decode(self.request.body)
             #Removed the strip and smalls because it doesn't work with encypted text
             email = body['email']
+            iv = body['iv']
             password = body['password']
             salt = body['salt']
             display_name = body.get('displayName')
@@ -26,6 +27,10 @@ class RegistrationHandler(BaseHandler):
             return
 
         if not email:
+            self.send_error(400, message='The email address is invalid!')
+            return
+        
+        if not iv:
             self.send_error(400, message='The email address is invalid!')
             return
 
@@ -71,6 +76,7 @@ class RegistrationHandler(BaseHandler):
 
         await self.db.users.insert_one({
             'email': email,
+            'iv': iv,
             'password': password,
             'salt': salt,
             'displayName': display_name,

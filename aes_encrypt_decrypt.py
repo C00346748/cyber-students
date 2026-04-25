@@ -130,12 +130,17 @@ def decrypt_aes_string(ciphertext):
 
     return plain_string
 
+
 #Extract the iv from the base64 string and return the bytes
 def extract_iv_bytes(ciphertext):
     iv = ciphertext[:NUM_CHARS]
     iv_64_bytes = iv.encode('ascii')
     iv_bytes = base64.b64decode(iv_64_bytes)
     return iv_bytes
+
+def extract_iv_string(ciphertext):
+    iv = ciphertext[:NUM_CHARS]
+    return iv
 
 #Extract the ciphertext which is the rest of the string less the iv
 def extract_cipher(ciphertext):

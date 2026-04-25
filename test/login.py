@@ -32,7 +32,7 @@ class LoginHandlerTest(BaseTest):
         super().setUp()
 
         #This is raw text would need to change
-        self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        self.email = aes_encrypt_decrypt.encrypt_aes_string_iv_apart('test@test.com')
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
         salt = list[1]
         self.password = list[0]
@@ -58,21 +58,20 @@ class LoginHandlerTest(BaseTest):
         self.assertIsNotNone(body_2['expiresIn'])
 
     #Testing login with case insensitve
+    #Changed to fail because encryption won't handle a change in the characters
     def test_login_case_insensitive(self):
         #This uses raw data
         body = {
           'email': self.email.swapcase(),
           'password': self.password
         }
-
+        print("Body email " + body['email'] + " " + self.email.swapcase() + " " + self.email)
         response = self.fetch('/login', method='POST', body=dumps(body))
-        #This should not work with hashed emails and passwords
+        #This should not work with the encrypted email
         self.assertEqual(403, response.code)
 
         body_2 = json_decode(response.body)
 
-        #Now FAILS because this is working with hashes
-        #Raw tokens but only checks it's not empty
         #self.assertIsNotNone(body_2['token'])
         #self.assertIsNotNone(body_2['expiresIn'])
 

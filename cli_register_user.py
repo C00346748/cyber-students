@@ -29,11 +29,14 @@ async def cli_registration():
     print(f"*** Calling reg ***:")
     #Need to retrieve a record to decrypt from DB so using one-off IV for e-mail
     email = aes_encrypt_decrypt.encrypt_aes_string_iv_apart(input('Please enter your email: '))
+
     #email_in = input('Please enter your email: ')
     list = crypto_helper.add_salt(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')))
     password = list[0]
     salt = list[1]
     display_name = aes_encrypt_decrypt.encrypt_aes_string(input('Enter the display name to use: '))
+    iv = aes_encrypt_decrypt.extract_iv_string(display_name)
+    print("IV " + iv)
     fullname = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full name: '))
     address = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full address: '))
     dob = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your date of birth DD/MM/YYY: ')) 
@@ -46,6 +49,7 @@ async def cli_registration():
 
     body = {
         'email': email,
+        'iv': iv,
         'password': password,
         'salt':salt,
         'displayName': display_name,

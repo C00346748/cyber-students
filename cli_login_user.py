@@ -18,7 +18,7 @@ async def cli_login():
     #get the salt from the database and combine with password
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 
-    #Get salt from the DB to season the password entered
+    #Get salt and iv from the DB to season the password entered
     try:
         user_salt = await db.users.find_one({
             'email': email

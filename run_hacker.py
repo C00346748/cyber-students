@@ -16,6 +16,7 @@ from api.conf import MONGODB_HOST, MONGODB_DBNAME
 async def get_users(db):
   cur = db.users.find({}, {
     'email': 1,
+    'iv': 1,
     'password': 1,
     'salt': 1,
     'displayName': 1,
