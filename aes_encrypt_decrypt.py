@@ -10,7 +10,9 @@ import base64
 padder = padding.PKCS7(algorithms.AES.block_size).padder()
 unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
 ENC_KEY = bytes(keyring.get_password("aes","enc_key"),"utf-8")
-ENC_IV = b'\x9f\x8e\x12\xbc\x07\x01\x1e\x88\xbd\x98k\x15\xae\x84~\xbf'
+EMAIL_IV = b'\x9f\x8e\x12\xbc\x07\x01\x1e\x88\xbd\x98k\x15\xae\x84~\xbf'
+ENC_IV = os.urandom(16)
+NUM_CHARS = 24 #Number of characters to split the IV and Cipher in String form, change if number of bytes changes
 
 def encrypt(P):
     #key = 128 bit (16 bytes) key
@@ -50,20 +52,20 @@ def decrypt_aes(ciphertext):
     unpadder = padding.PKCS7(128).unpadder()
     return unpadder.update(padded_data) + unpadder.finalize()
 
-def encrypt_aes_string(data):
+def encrypt_aes_string_iv_apart(data):
     # Padding: AES-128 requires 128-bit blocks
     data_bytes = bytes(data, "utf-8") #decode to bytes
     padder = padding.PKCS7(128).padder()
     padded_data = padder.update(data_bytes) + padder.finalize()
     
-    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(ENC_IV), backend=default_backend())
+    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(EMAIL_IV), backend=default_backend())
     encryptor = cipher.encryptor()
     cipher_text = encryptor.update(padded_data) + encryptor.finalize()
     data_64 = base64.b64encode(cipher_text)
 
     return data_64.decode('utf-8') #return string version of base 64
 
-def decrypt_aes_string(ciphertext):
+def decrypt_aes_string_iv_apart(ciphertext):
 
     #from string to 64 base bytes
     ciphertext_64_bytes = ciphertext.encode('ascii')
@@ -86,6 +88,60 @@ def decrypt_aes_string(ciphertext):
 
     return plain_string
 
+def encrypt_aes_string(data):
+    # Padding: AES-128 requires 128-bit blocks
+    data_bytes = bytes(data, "utf-8") #decode to bytes
+    padder = padding.PKCS7(128).padder()
+    padded_data = padder.update(data_bytes) + padder.finalize()
+    
+    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(ENC_IV), backend=default_backend())
+    encryptor = cipher.encryptor()
+    cipher_text = encryptor.update(padded_data) + encryptor.finalize()
+    data_64 = base64.b64encode(cipher_text)
+
+    iv_64 = base64.b64encode(ENC_IV)
+    iv = iv_64.decode('utf-8')
+
+    return iv + data_64.decode('utf-8') #return string version of base 64
+
+def decrypt_aes_string(ciphertext):
+
+    iv_bytes = extract_iv_bytes(ciphertext)
+    #print("IV is " + base64.b64decode(iv_bytes).decode('utf-8'))
+    #from string to 64 base bytes
+    ciphertext = extract_cipher(ciphertext)
+    ciphertext_64_bytes = ciphertext.encode('ascii')
+    #Decode to string bytes
+    cipherbytes = base64.b64decode(ciphertext_64_bytes)
+
+    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(iv_bytes), backend=default_backend())
+    decryptor = cipher.decryptor()
+    padded_data = decryptor.update(cipherbytes) + decryptor.finalize()
+    
+    unpadder = padding.PKCS7(128).unpadder()
+
+    plain_bytes = unpadder.update(padded_data) + unpadder.finalize()
+    #Gave back plain bytes...converting to base 64
+    plain_64 = base64.b64encode(plain_bytes)
+    #Converting the base 64 to base 64 string
+    plain_text = plain_64.decode('ascii')
+    #change the base 64 string to acsii string for return
+    plain_string = base64.b64decode(plain_text).decode('utf-8')
+
+    return plain_string
+
+#Extract the iv from the base64 string and return the bytes
+def extract_iv_bytes(ciphertext):
+    iv = ciphertext[:NUM_CHARS]
+    iv_64_bytes = iv.encode('ascii')
+    iv_bytes = base64.b64decode(iv_64_bytes)
+    return iv_bytes
+
+#Extract the ciphertext which is the rest of the string less the iv
+def extract_cipher(ciphertext):
+    ciphertext = ciphertext[NUM_CHARS:]
+    return ciphertext
+
 if __name__ == '__main__':
     '''
     string = b'luke'
@@ -97,12 +153,13 @@ if __name__ == '__main__':
     print("Dec: " + dec.decode("utf-8"))
     '''
 
-    string2 = 'luke'
+    string2 = 'this seems to be working now luke'
     enc2 = encrypt_aes_string(string2)
-    #enc2_64=base64.b64encode(enc)
+    #enc2_64=base64.b64encode(enc2)
     print("Enc: " + enc2)
     #enc2=base64.b64decode(enc2_64)
     dec2 = decrypt_aes_string(enc2)
     print("Dec: " + dec2)
+    
 
     

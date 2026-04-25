@@ -11,7 +11,8 @@ from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_U
 from motor.motor_tornado import MotorClient
 
 async def cli_login():
-    email = aes_encrypt_decrypt.encrypt_aes_string(input('Please enter your email: '))
+    email = aes_encrypt_decrypt.encrypt_aes_string_iv_apart(input('Please enter your email: '))
+    print("Email: " + email)
     #email_in = input('Please enter your email: ')
     salt = None
     #get the salt from the database and combine with password
