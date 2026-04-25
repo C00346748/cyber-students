@@ -30,7 +30,6 @@ class LoginHandler(BaseHandler):
             body = json_decode(self.request.body)
             #Remove strip no good with hashes
             email = body['email']
-            print("***** POST Login Req **** Email " + email)
             password = body['password']
             #print(f"####xxxx Body email login is {body['email']}")
         except Exception:
@@ -65,6 +64,13 @@ class LoginHandler(BaseHandler):
         self.response['token'] = token['token']
         #print(f"++++++ Tokens compared {self.response['token']} with {token['token']}")
         self.response['expiresIn'] = token['expiresIn']
-        self.response['message'] = 'Login Successful!'
+
+        displayName = await self.db.users.find_one({
+          'email': email
+        }, {
+          'displayName': 1
+        })
+
+        self.response['message'] = f'Login Successful!, Welcome {aes_encrypt_decrypt.decrypt_aes_string(displayName['displayName'])}'
 
         self.write_json()
