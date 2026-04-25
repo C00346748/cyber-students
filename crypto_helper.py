@@ -6,6 +6,7 @@ import keyring
 from api.conf import PEPPER, SERVICE_NAME, SALT_N, SALT_P, SALT_R, SALT_LENGTH
 import base64
 import os
+import hashlib
 
 #Pepper passed str, return string, using HMAC (Hash-based Message authentication)
 def add_pepper(str):
@@ -44,3 +45,8 @@ def season(passphrase,salt):
     hashed_passphrase_base64 = base64.b64encode(hashed_passphrase)
     #Need peppered passphrase and salt returned
     return hashed_passphrase_base64.decode('ascii')
+
+def simple_hash(passphrase):
+    passphrase_bytes = bytes(passphrase, "utf-8")
+    passphrase_hash = hashlib.sha256(passphrase.encode('utf-8')).hexdigest()
+    return passphrase_hash

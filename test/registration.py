@@ -30,6 +30,7 @@ class RegistrationHandlerTest(BaseTest):
         email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
         #Add IV later
         display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
+        iv = aes_encrypt_decrypt.extract_iv_string(display_name)
         #print(f"Salt and peppered display name {display_name}")
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
         password = list[0]
@@ -43,6 +44,7 @@ class RegistrationHandlerTest(BaseTest):
         list_disabilities = aes_encrypt_decrypt.encrypt_aes_string('x')
         body = {
           'email': email,
+          'iv': iv,
           'password': password,
           'salt': salt,
           'displayName': display_name,
@@ -71,6 +73,7 @@ class RegistrationHandlerTest(BaseTest):
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = aes_encrypt_decrypt.encrypt_aes_string('x')
+        iv = aes_encrypt_decrypt.extract_iv_string(fullname)
         address = aes_encrypt_decrypt.encrypt_aes_string('x')
         dob = aes_encrypt_decrypt.encrypt_aes_string('x')
         phone_number = aes_encrypt_decrypt.encrypt_aes_string('x')
@@ -78,6 +81,7 @@ class RegistrationHandlerTest(BaseTest):
 
         body = {
           'email': email,
+          'iv': iv,
           'password': password,
           'salt':salt,
           'fullname' : fullname,
@@ -107,6 +111,7 @@ class RegistrationHandlerTest(BaseTest):
         #print("Password in test without display name " + password)
         #body dictionary replacing password retrieval with keyring
         display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
+        iv = aes_encrypt_decrypt.extract_iv_string(display_name)
         #print(f"**** Password and Email Reg ****  {email} password {password}")
         #body dictionary replacing password retrieval with keyring
         fullname = aes_encrypt_decrypt.encrypt_aes_string('x')
@@ -117,6 +122,7 @@ class RegistrationHandlerTest(BaseTest):
 
         body = {
           'email': email,
+          'iv': iv,
           'password': password,
           'salt': salt,
           'displayName': display_name,

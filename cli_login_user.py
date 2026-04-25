@@ -3,6 +3,7 @@ import crypto_helper
 import aes_encrypt_decrypt
 import pwinput
 import click
+from uuid import uuid4
 
 from tornado.httpclient import AsyncHTTPClient
 from json import dumps
@@ -11,7 +12,7 @@ from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_U
 from motor.motor_tornado import MotorClient
 
 async def cli_login():
-    email = aes_encrypt_decrypt.encrypt_aes_string_iv_apart(input('Please enter your email: '))
+    email = crypto_helper.simple_hash(input('Please enter your email: '))
     print("Email: " + email)
     #email_in = input('Please enter your email: ')
     salt = None

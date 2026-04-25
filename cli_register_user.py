@@ -27,10 +27,9 @@ import urllib.parse
 async def cli_registration():
     tracemalloc.start()
     print(f"*** Calling reg ***:")
-    #Need to retrieve a record to decrypt from DB so using one-off IV for e-mail
-    email = aes_encrypt_decrypt.encrypt_aes_string_iv_apart(input('Please enter your email: '))
-
-    #email_in = input('Please enter your email: ')
+    #Because the e-mail is not needed again I am hashing it
+    #If the e-mail was needed again I would encrypt it but then I'd need iv to match to DB
+    email = crypto_helper.simple_hash(input('Please enter your email: '))
     list = crypto_helper.add_salt(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')))
     password = list[0]
     salt = list[1]

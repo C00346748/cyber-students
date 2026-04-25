@@ -52,41 +52,7 @@ def decrypt_aes(ciphertext):
     unpadder = padding.PKCS7(128).unpadder()
     return unpadder.update(padded_data) + unpadder.finalize()
 
-def encrypt_aes_string_iv_apart(data):
-    # Padding: AES-128 requires 128-bit blocks
-    data_bytes = bytes(data, "utf-8") #decode to bytes
-    padder = padding.PKCS7(128).padder()
-    padded_data = padder.update(data_bytes) + padder.finalize()
-    
-    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(EMAIL_IV), backend=default_backend())
-    encryptor = cipher.encryptor()
-    cipher_text = encryptor.update(padded_data) + encryptor.finalize()
-    data_64 = base64.b64encode(cipher_text)
 
-    return data_64.decode('utf-8') #return string version of base 64
-
-def decrypt_aes_string_iv_apart(ciphertext):
-
-    #from string to 64 base bytes
-    ciphertext_64_bytes = ciphertext.encode('ascii')
-    #Decode to string bytes
-    cipherbytes = base64.b64decode(ciphertext_64_bytes)
-
-    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(ENC_IV), backend=default_backend())
-    decryptor = cipher.decryptor()
-    padded_data = decryptor.update(cipherbytes) + decryptor.finalize()
-    
-    unpadder = padding.PKCS7(128).unpadder()
-
-    plain_bytes = unpadder.update(padded_data) + unpadder.finalize()
-    #Gave back plain bytes...converting to base 64
-    plain_64 = base64.b64encode(plain_bytes)
-    #Converting the base 64 to base 64 string
-    plain_text = plain_64.decode('ascii')
-    #change the base 64 string to acsii string for return
-    plain_string = base64.b64decode(plain_text).decode('utf-8')
-
-    return plain_string
 
 def encrypt_aes_string(data):
     # Padding: AES-128 requires 128-bit blocks

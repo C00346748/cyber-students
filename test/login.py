@@ -57,9 +57,9 @@ class LoginHandlerTest(BaseTest):
         self.assertIsNotNone(body_2['expiresIn'])
 
     #Testing login with case insensitve
-    #Changed to fail because encryption won't handle a change in the characters
+    #Changed to fail '403' because encryption won't handle a change in the characters
     def test_login_case_insensitive(self):
-        #This uses raw data
+        
         body = {
           'email': self.email.swapcase(),
           'password': self.password
