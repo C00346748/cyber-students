@@ -16,5 +16,7 @@ class LogoutHandler(AuthHandler):
 
         self.current_user = None
 
+        self.response['message'] = 'Logout Successful!'
+
         self.set_status(200)
         self.write_json()

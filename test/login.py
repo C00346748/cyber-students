@@ -27,7 +27,6 @@ class LoginHandlerTest(BaseTest):
             'displayName': self.displayName
         })
 
-
     def setUp(self):
         super().setUp()
 
@@ -97,3 +96,5 @@ class LoginHandlerTest(BaseTest):
 
         response = self.fetch('/login', method='POST', body=dumps(body))
         self.assertEqual(403, response.code)
+
+        
