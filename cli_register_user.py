@@ -17,8 +17,10 @@ import asyncio
 import tracemalloc
 import pwinput
 import base64
+import input_helper
 
 from api.handlers.registration import RegistrationHandler
+from email_validator import validate_email, EmailNotValidError
 
 import urllib.parse
 
@@ -29,16 +31,33 @@ async def cli_registration():
     print(f"*** Calling reg ***:")
     #Because the e-mail is not needed again I am hashing it
     #If the e-mail was needed again I would encrypt it but then I'd need iv to match to DB
-    email = crypto_helper.simple_hash(input('Please enter your email: '))
-    list = crypto_helper.add_salt(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')))
+    email_sentinel = True
+    while(email_sentinel):
+        email_in = input('Please enter your email: ')
+        if(input_helper.verifyEmail(email_in)):
+            email_sentinel = False
+        else:
+            print("Bad email format try again")
+            email_sentinel = True
+    #All input would need to be validated, e.g., password length and patterns
+    email = crypto_helper.simple_hash(email_in)
+    password_sentinel = True
+    while(password_sentinel):
+        password_in = pwinput.pwinput('Enter your password: ')
+        if(input_helper.verifyPasswordLengthOnly(password_in)):
+            password_sentinel = False
+        else:
+            print(f"Password must be more than {input_helper.MIN_PASSWORD_LENGTH} characters, at least one number, at least one upper case")
+            password_sentinel = True
+    list = crypto_helper.add_salt(crypto_helper.add_pepper(password_in))
     password = list[0]
     salt = list[1]
     display_name = aes_encrypt_decrypt.encrypt_aes_string(input('Enter the display name to use: '))
+    #Get the IV for later decryptions from displayname entry
     iv = aes_encrypt_decrypt.extract_iv_string(display_name)
-    print("IV " + iv)
     fullname = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full name: '))
     address = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full address: '))
-    dob = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your date of birth DD/MM/YYY: ')) 
+    dob = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your date of birth DD/MM/YYYY: ')) 
     phone_number = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your phone number: '))
     list_disabilities = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your list of disabilities: '))
 
@@ -87,6 +106,8 @@ async def welcome():
 
     body = json_decode(response.body)
     print(body['message'])
+
+
 
     #Configure to run as script
 if __name__ == '__main__':

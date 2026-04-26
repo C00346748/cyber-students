@@ -31,7 +31,7 @@ class LoginHandlerTest(BaseTest):
         super().setUp()
 
         #This is raw text would need to change
-        self.email = aes_encrypt_decrypt.encrypt_aes_string_iv_apart('test@test.com')
+        self.email = crypto_helper.simple_hash('test@test.com')
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
         salt = list[1]
         self.password = list[0]

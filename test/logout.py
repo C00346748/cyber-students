@@ -7,6 +7,7 @@ from .conf import SERVICE_NAME
 
 import keyring
 import aes_encrypt_decrypt
+import crypto_helper
 
 
 from api.handlers.logout import LogoutHandler
@@ -39,7 +40,7 @@ class LogoutHandlerTest(BaseTest):
     def setUp(self):
         super().setUp()
         #Use of raw password replaced with keyring
-        self.email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        self.email = crypto_helper.simple_hash('test@test.com')
         self.password = 'testPassword'
         self.token = aes_encrypt_decrypt.encrypt_aes_string('testToken')
 

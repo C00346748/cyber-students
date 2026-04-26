@@ -103,7 +103,7 @@ class RegistrationHandlerTest(BaseTest):
 
     #Double reg, should pass first attempt and fail second attempt to reg same user
     def test_registration_twice(self):
-        email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        email = crypto_helper.simple_hash('test@test.com')
         #print("Email in test without display name " + email)
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
         password = list[0]
