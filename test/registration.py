@@ -27,7 +27,7 @@ class RegistrationHandlerTest(BaseTest):
     #Sends reg request to webserver
     def test_registration(self):
         #print(f"Salt for user:  {crypto_helper.get_salt('test@test.com')}")
-        email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        email = crypto_helper.simple_hash('test@test.com')
         #Add IV later
         display_name = aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
         iv = aes_encrypt_decrypt.extract_iv_string(display_name)
@@ -66,7 +66,7 @@ class RegistrationHandlerTest(BaseTest):
     #Sends reg request without display name which is fine
 
     def test_registration_without_display_name(self):
-        email = aes_encrypt_decrypt.encrypt_aes_string('test@test.com')
+        email = crypto_helper.simple_hash('test@test.com')
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
         password = list[0]
         salt = list[1]

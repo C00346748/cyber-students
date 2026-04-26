@@ -64,7 +64,7 @@ class LoginHandlerTest(BaseTest):
           'email': self.email.swapcase(),
           'password': self.password
         }
-        print("Body email " + body['email'] + " " + self.email.swapcase() + " " + self.email)
+        #print("Body email " + body['email'] + " " + self.email.swapcase() + " " + self.email)
         response = self.fetch('/login', method='POST', body=dumps(body))
         #This should not work with the encrypted email
         self.assertEqual(403, response.code)

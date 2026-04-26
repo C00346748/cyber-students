@@ -49,6 +49,7 @@ async def cli_login():
         )
         print(f"Server response {response.code}")
         body = json_decode(response.body)
+        print(body['message'])
     except:
         print("Error with login")
 
