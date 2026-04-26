@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives import padding
 import os
 import keyring
 import base64
+import crypto_helper
 
 #block_size = 16
 
@@ -97,6 +98,47 @@ def decrypt_aes_string(ciphertext):
     return plain_string
 
 
+def encrypt_aes_string_pass_iv(data,iv):
+    # Padding: AES-128 requires 128-bit blocks
+    data_bytes = bytes(data, "utf-8") #decode to bytes
+    iv_64_bytes = iv.encode('ascii') #from string to base 64 bytes
+    iv_bytes = base64.b64decode(iv_64_bytes) #to string bytes
+    padder = padding.PKCS7(128).padder()
+    padded_data = padder.update(data_bytes) + padder.finalize()
+    
+    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(iv_bytes), backend=default_backend())
+    encryptor = cipher.encryptor()
+    cipher_text = encryptor.update(padded_data) + encryptor.finalize()
+    data_64 = base64.b64encode(cipher_text)
+
+    return data_64.decode('utf-8') #return string version of base 64
+
+def decrypt_aes_string_pass_iv(ciphertext,iv):
+
+    iv_64_bytes = iv.encode('ascii') #from string to base 64 bytes
+    iv_bytes = base64.b64decode(iv_64_bytes) #to string bytes
+    #print("IV is " + base64.b64decode(iv_bytes).decode('utf-8'))
+    #from string to 64 base bytes
+    ciphertext_64_bytes = ciphertext.encode('ascii')
+    #Decode to string bytes
+    cipherbytes = base64.b64decode(ciphertext_64_bytes)
+
+    cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(iv_bytes), backend=default_backend())
+    decryptor = cipher.decryptor()
+    padded_data = decryptor.update(cipherbytes) + decryptor.finalize()
+    
+    unpadder = padding.PKCS7(128).unpadder()
+
+    plain_bytes = unpadder.update(padded_data) + unpadder.finalize()
+    #Gave back plain bytes...converting to base 64
+    plain_64 = base64.b64encode(plain_bytes)
+    #Converting the base 64 to base 64 string
+    plain_text = plain_64.decode('ascii')
+    #change the base 64 string to acsii string for return
+    plain_string = base64.b64decode(plain_text).decode('utf-8')
+
+    return plain_string
+
 #Extract the iv from the base64 string and return the bytes
 def extract_iv_bytes(ciphertext):
     iv = ciphertext[:NUM_CHARS]
@@ -125,11 +167,14 @@ if __name__ == '__main__':
     '''
 
     string2 = 'this seems to be working now luke'
-    enc2 = encrypt_aes_string(string2)
+    iv_bytes = crypto_helper.gen_16_iv()
+    iv_string = crypto_helper.get_iv_string(iv_bytes)
+    print(iv_string)
+    enc2 = encrypt_aes_string_pass_iv(string2,iv_string)
     #enc2_64=base64.b64encode(enc2)
     print("Enc: " + enc2)
     #enc2=base64.b64decode(enc2_64)
-    dec2 = decrypt_aes_string(enc2)
+    dec2 = decrypt_aes_string_pass_iv(enc2,iv_string)
     print("Dec: " + dec2)
     
 

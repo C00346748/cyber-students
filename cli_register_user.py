@@ -40,6 +40,10 @@ async def cli_registration():
             email_sentinel = True
     #All input would need to be validated, e.g., password length and patterns
     email = crypto_helper.simple_hash(email_in)
+    iv_email_bytes = crypto_helper.gen_16_iv()
+    iv_email = crypto_helper.get_iv_string(iv_email_bytes)
+    email_enc = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(email_in,iv_email)
+
     password_sentinel = True
     while(password_sentinel):
         password_in = pwinput.pwinput('Enter your password: ')
@@ -51,11 +55,22 @@ async def cli_registration():
     list = crypto_helper.add_salt(crypto_helper.add_pepper(password_in))
     password = list[0]
     salt = list[1]
-    display_name = aes_encrypt_decrypt.encrypt_aes_string(input('Enter the display name to use: '))
-    #Get the IV for later decryptions from displayname entry
-    iv = aes_encrypt_decrypt.extract_iv_string(display_name)
-    fullname = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full name: '))
-    address = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full address: '))
+
+    display_name_in = input('Enter the display name to use: ')
+    iv_displayName_bytes = crypto_helper.gen_16_iv()
+    iv_displayName = crypto_helper.get_iv_string(iv_displayName_bytes)
+    display_name = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(display_name_in,iv_displayName)
+
+    fullname_in = input('Enter your full name: ')
+    iv_fullname_bytes = crypto_helper.gen_16_iv()
+    iv_fullname = crypto_helper.get_iv_string(iv_fullname_bytes)
+    fullname = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(fullname_in,iv_fullname)
+
+    address_in = input('Enter your full address: ')
+    iv_address_bytes = crypto_helper.gen_16_iv()
+    iv_address = crypto_helper.get_iv_string(iv_address_bytes)
+    address = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(address_in,iv_address)
+
     dob_sentinel = True
     while(dob_sentinel):
         dob_in = input('Enter date of birth DD/MM/YYYY: ')
@@ -65,24 +80,42 @@ async def cli_registration():
         else:
             print("Please us correct format DD/MM/YYYY")
             dob_sentinel=True
-    dob = aes_encrypt_decrypt.encrypt_aes_string(dob_in)
-    phone_number = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your phone number: '))
-    list_disabilities = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your list of disabilities: '))
+
+    iv_dob_bytes = crypto_helper.gen_16_iv()
+    iv_dob = crypto_helper.get_iv_string(iv_dob_bytes)
+    dob = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(dob_in,iv_dob)
+
+    phone_number_in = input('Enter your phone number: ')
+    iv_phone_number_bytes = crypto_helper.gen_16_iv()
+    iv_phone_number = crypto_helper.get_iv_string(iv_phone_number_bytes)
+    phone_number = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(phone_number_in,iv_phone_number)
+
+    list_disabilities_in = input('Enter your list of disabilities: ')
+    iv_list_disabilities_bytes = crypto_helper.gen_16_iv()
+    iv_list_disabilities = crypto_helper.get_iv_string(iv_list_disabilities_bytes)
+    list_disabilities = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(list_disabilities_in,iv_list_disabilities)
 
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
 
     body = {
         'email': email,
-        'iv': iv,
+        'email_enc': email_enc,
+        'iv_email': iv_email,
         'password': password,
         'salt':salt,
         'displayName': display_name,
+        'iv_displayName': iv_displayName,
         'fullname' : fullname,
+        'iv_fullname': iv_fullname,
         'address': address,
+        'iv_address': iv_address,
         'dob': dob,
+        'iv_dob': iv_dob,
         'phone_number': phone_number,
-        'list_disabilities': list_disabilities
+        'iv_phone_number': iv_phone_number,
+        'list_disabilities': list_disabilities,
+        'iv_list_disabilities': iv_list_disabilities
     }
 
     #print(f"**** {body['email']}")
@@ -114,9 +147,7 @@ async def welcome():
     body = json_decode(response.body)
     print(body['message'])
 
-
-
-    #Configure to run as script
+#Configure to run as script
 if __name__ == '__main__':
     asyncio.run(welcome())
     asyncio.run(cli_registration())

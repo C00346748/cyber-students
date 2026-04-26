@@ -11,10 +11,13 @@ class LoginHandler(BaseHandler):
     async def generate_token(self, email):
         token_uuid = uuid4().hex
         expires_in = (datetime.now(timezone.utc) + timedelta(hours=2)).timestamp()
+        #salted and peppered token, not possible to retrieve original token due to random salt
+        token_list = crypto_helper.add_salt(crypto_helper.add_pepper(token_uuid))
+        token_uuid = token_list[0]
 
         token = {
             #Should I have encrypted this?...not sure it was necessary
-            'token': crypto_helper.simple_hash(token_uuid),
+            'token': token_uuid,
             'expiresIn': expires_in,
         }
 
@@ -66,12 +69,20 @@ class LoginHandler(BaseHandler):
         #print(f"++++++ Tokens compared {self.response['token']} with {token['token']}")
         self.response['expiresIn'] = token['expiresIn']
 
+        displayNameIV = await self.db.users.find_one({
+          'email': email
+        }, {
+          'iv_displayName': 1
+        })
+
         displayName = await self.db.users.find_one({
           'email': email
         }, {
           'displayName': 1
         })
 
-        self.response['message'] = f'Login Successful!, Welcome {aes_encrypt_decrypt.decrypt_aes_string(displayName['displayName'])}'
+        name = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(displayName['displayName'],displayNameIV['iv_displayName'])
+        #self.response['message'] = f'Login Successful!, Welcome {aes_encrypt_decrypt.decrypt_aes_string(displayName['displayName'])}'
+        self.response['message'] = f'Login Successful!, Welcome {name}'
 
         self.write_json()

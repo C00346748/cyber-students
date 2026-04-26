@@ -12,6 +12,8 @@ from api.conf import SERVICE_NAME, MONGODB_DBNAME, WORKERS, MONGODB_HOST, BASE_U
 from motor.motor_tornado import MotorClient
 
 async def cli_logout():
+    #This email hash will be used to retrieve the record without iv
+    #The AES encrypted version will be used to retrieve email with iv
     email = crypto_helper.simple_hash(input('Please enter your email: '))
     http_client = AsyncHTTPClient()
     url = BASE_URL + "api/logout"

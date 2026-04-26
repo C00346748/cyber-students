@@ -50,3 +50,10 @@ def simple_hash(passphrase):
     passphrase_bytes = bytes(passphrase, "utf-8")
     passphrase_hash = hashlib.sha256(passphrase.encode('utf-8')).hexdigest()
     return passphrase_hash
+
+def gen_16_iv():
+    return os.urandom(16)
+
+def get_iv_string(iv):
+    iv_64 = base64.b64encode(iv)
+    return iv_64.decode('ascii')
