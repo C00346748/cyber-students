@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from tornado.escape import json_decode
 from uuid import uuid4
 import aes_encrypt_decrypt
+import crypto_helper
 
 from .base import BaseHandler
 
@@ -13,7 +14,7 @@ class LoginHandler(BaseHandler):
 
         token = {
             #Should I have encrypted this?...not sure it was necessary
-            'token': aes_encrypt_decrypt.encrypt_aes_string(token_uuid),
+            'token': crypto_helper.simple_hash(token_uuid),
             'expiresIn': expires_in,
         }
 
