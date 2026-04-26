@@ -72,18 +72,22 @@ class LoginHandler(BaseHandler):
         fullnameiv = await self.db.users.find_one({
           'email': email
         }, {
-          'iv_fullname': 1
+          'iv_fullname': 1 
         })
-        
+
         fullname = await self.db.users.find_one({
           'email': email
         }, {
-          'fullname': 1
+          'fullname': 1 
         })
+        try: 
+            test = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(fullname['fullname'],fullnameiv['iv_fullname'])
+        except:
+            test = 'test'
         #if displayName:
 
         #name = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(fullName['fullname'],fullNameIV['iv_fullname'])
         #self.response['message'] = f'Login Successful!, Welcome {aes_encrypt_decrypt.decrypt_aes_string(displayName['displayName'])}'
-        self.response['message'] = f'Login Successful!, Welcome'
+        self.response['message'] = f'Login Successful!, Welcome {test}'
 
         self.write_json()
