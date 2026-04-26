@@ -53,7 +53,7 @@ class LoginHandler(BaseHandler):
         }, {
           'password': 1
         })
-
+        print(f"*** Password at server: {password}")
         if user is None:
             self.send_error(403, message='The email address and password are invalid!')
             return
@@ -69,20 +69,21 @@ class LoginHandler(BaseHandler):
         #print(f"++++++ Tokens compared {self.response['token']} with {token['token']}")
         self.response['expiresIn'] = token['expiresIn']
 
-        displayNameIV = await self.db.users.find_one({
+        fullnameiv = await self.db.users.find_one({
           'email': email
         }, {
-          'iv_displayName': 1
+          'iv_fullname': 1
         })
-
-        displayName = await self.db.users.find_one({
+        
+        fullname = await self.db.users.find_one({
           'email': email
         }, {
-          'displayName': 1
+          'fullname': 1
         })
+        #if displayName:
 
-        name = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(displayName['displayName'],displayNameIV['iv_displayName'])
+        #name = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(fullName['fullname'],fullNameIV['iv_fullname'])
         #self.response['message'] = f'Login Successful!, Welcome {aes_encrypt_decrypt.decrypt_aes_string(displayName['displayName'])}'
-        self.response['message'] = f'Login Successful!, Welcome {name}'
+        self.response['message'] = f'Login Successful!, Welcome'
 
         self.write_json()

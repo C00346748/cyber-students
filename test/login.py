@@ -35,7 +35,10 @@ class LoginHandlerTest(BaseTest):
         list = crypto_helper.add_salt(crypto_helper.add_pepper('testPassword'))
         salt = list[1]
         self.password = list[0]
-        self.displayName =  aes_encrypt_decrypt.encrypt_aes_string('testDisplayName')
+        display_name='testDisplayName'
+        iv_displayName_bytes = crypto_helper.gen_16_iv()
+        iv_displayName = crypto_helper.get_iv_string(iv_displayName_bytes)
+        self.displayName = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(display_name,iv_displayName)
 
         IOLoop.current().run_sync(self.register)
 
@@ -46,7 +49,7 @@ class LoginHandlerTest(BaseTest):
           'email': self.email,
           'password': self.password
         }
-
+        print("Password at client: ",body['password'])
         response = self.fetch('/login', method='POST', body=dumps(body))
         self.assertEqual(200, response.code)
 

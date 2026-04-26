@@ -45,9 +45,10 @@ class RegistrationHandler(BaseHandler):
             self.send_error(400, message='The email address is invalid!')
             return
 
-        if not iv_displayName:
-            self.send_error(400, message='The email address is invalid!')
-            return
+        #DisplayName not required
+        #if not iv_displayName:
+            #self.send_error(400, message='The email address is invalid!')
+            #return
 
         if not password:
             self.send_error(400, message='The password is invalid!')
@@ -57,9 +58,10 @@ class RegistrationHandler(BaseHandler):
             self.send_error(400, message='Salt error!')
             return
 
-        if not display_name:
-            self.send_error(400, message='The display name is invalid!')
-            return
+        #DisplayName not required
+        #if not display_name:
+            #self.send_error(400, message='The display name is invalid!')
+            #return
         
         if not fullname:
             self.send_error(400, message='The full name is invalid!')
