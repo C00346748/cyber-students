@@ -1,4 +1,5 @@
 from email_validator import validate_email, EmailNotValidError
+from datetime import datetime
 
 MIN_PASSWORD_LENGTH = 6
 
@@ -21,4 +22,12 @@ def verifyPasswordLengthOnly(password):
         if caps and number:
             return True
     else:
+        return False
+    
+def dateVerify(date):
+    try:
+        valid_date = datetime.strptime(date, "%d/%m/%Y")
+        return True
+    except ValueError:
+        # If parsing fails, it's either the wrong format or an invalid date
         return False

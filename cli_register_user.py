@@ -56,7 +56,16 @@ async def cli_registration():
     iv = aes_encrypt_decrypt.extract_iv_string(display_name)
     fullname = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full name: '))
     address = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your full address: '))
-    dob = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your date of birth DD/MM/YYYY: ')) 
+    dob_sentinel = True
+    while(dob_sentinel):
+        dob_in = input('Enter date of birth DD/MM/YYYY: ')
+        dob_sentinel = False
+        if(input_helper.dateVerify(dob_in)):
+            pass
+        else:
+            print("Please us correct format DD/MM/YYYY")
+            dob_sentinel=True
+    dob = aes_encrypt_decrypt.encrypt_aes_string(dob_in)
     phone_number = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your phone number: '))
     list_disabilities = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your list of disabilities: '))
 
