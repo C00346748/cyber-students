@@ -1,6 +1,7 @@
 import keyring
 PORT = 4000
 BASE_URL = 'http://localhost:4000/students/'
+#Authentication of DB enabled myUserAdmin and admindb
 MONGO_DB_SERVICE = "access_db"
 MONGO_DB_USER = "access_db_user"
 SERVICE_NAME = 'key_db'
