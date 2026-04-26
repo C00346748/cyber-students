@@ -13,8 +13,7 @@ from motor.motor_tornado import MotorClient
 
 async def cli_login():
     email = crypto_helper.simple_hash(input('Please enter your email: '))
-    print("Email: " + email)
-    #email_in = input('Please enter your email: ')
+    
     salt = None
     #get the salt from the database and combine with password
     db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
@@ -50,7 +49,6 @@ async def cli_login():
         )
         print(f"Server response {response.code}")
         body = json_decode(response.body)
-        print(body['message'])
     except:
         print("Error with login")
 

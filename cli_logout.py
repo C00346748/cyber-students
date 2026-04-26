@@ -25,8 +25,6 @@ async def cli_logout():
     })
     token = user_token['token']
 
-    print("Token " + token)
-
     headers = HTTPHeaders({'X-Token': token})
     body = {}
 

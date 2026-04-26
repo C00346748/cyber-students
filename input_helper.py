@@ -1,4 +1,3 @@
-import re
 from email_validator import validate_email, EmailNotValidError
 
 MIN_PASSWORD_LENGTH = 6
@@ -11,7 +10,7 @@ def verifyEmail(email):
         # Use the normalized form (e.g., lowercase)
         normalized_email = valid.email
     except EmailNotValidError as e:
-        print(f"Invalid Email: {str(e)}")
+        print(f"Invalid Email format: {str(e)}")
         return False
     return True
 

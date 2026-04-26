@@ -28,7 +28,6 @@ import urllib.parse
 #Sends reg request to webserver
 async def cli_registration():
     tracemalloc.start()
-    print(f"*** Calling reg ***:")
     #Because the e-mail is not needed again I am hashing it
     #If the e-mail was needed again I would encrypt it but then I'd need iv to match to DB
     email_sentinel = True
@@ -61,7 +60,6 @@ async def cli_registration():
     phone_number = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your phone number: '))
     list_disabilities = aes_encrypt_decrypt.encrypt_aes_string(input('Enter your list of disabilities: '))
 
-    print("CLI REG *** " + salt + " passphrase " + password)
     #print(f"**** Password and Email Reg ****  {email} password {password}")
     #body dictionary replacing password retrieval with keyring
 
