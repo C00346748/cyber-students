@@ -15,6 +15,7 @@ ENC_KEY = bytes(keyring.get_password("aes","enc_key"),"utf-8")
 ENC_IV = os.urandom(16)
 NUM_CHARS = 24 #Number of characters to split the IV and Cipher in String form, change if number of bytes changes
 
+#return base64 string
 def encrypt(P):
     #key = 128 bit (16 bytes) key
     #iv, initializaion vector passed
@@ -27,6 +28,7 @@ def encrypt(P):
     C_base64 = base64.b64encode(C_bytes)
     return C_base64.decode('ascii')
 
+#return base64 string
 def decrypt(C):
     cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(ENC_IV), backend=default_backend())
     C_bytes = bytes(C, "utf-8")
@@ -36,6 +38,7 @@ def decrypt(C):
     P_base64 = base64.b64encode(P)
     return P_base64.decode('ascii')
 
+#Encrypt bytes to bytes
 def encrypt_aes(data):
     # Padding: AES-128 requires 128-bit blocks
     padder = padding.PKCS7(128).padder()
@@ -45,6 +48,7 @@ def encrypt_aes(data):
     encryptor = cipher.encryptor()
     return encryptor.update(padded_data) + encryptor.finalize()
 
+#Decrypt bytes to bytes
 def decrypt_aes(ciphertext):
     cipher = Cipher(algorithms.AES(ENC_KEY), modes.CBC(ENC_IV), backend=default_backend())
     decryptor = cipher.decryptor()
@@ -54,7 +58,7 @@ def decrypt_aes(ciphertext):
     return unpadder.update(padded_data) + unpadder.finalize()
 
 
-
+#encrypt and prepended iv
 def encrypt_aes_string(data):
     # Padding: AES-128 requires 128-bit blocks
     data_bytes = bytes(data, "utf-8") #decode to bytes
@@ -71,6 +75,7 @@ def encrypt_aes_string(data):
 
     return iv + data_64.decode('utf-8') #return string version of base 64
 
+#decrypt with prepended iv
 def decrypt_aes_string(ciphertext):
 
     iv_bytes = extract_iv_bytes(ciphertext)
@@ -97,7 +102,7 @@ def decrypt_aes_string(ciphertext):
 
     return plain_string
 
-
+#Encrypt AES 128 with data and iv passed as string and result as string
 def encrypt_aes_string_pass_iv(data,iv):
     # Padding: AES-128 requires 128-bit blocks
     data_bytes = bytes(data, "utf-8") #decode to bytes
@@ -113,6 +118,7 @@ def encrypt_aes_string_pass_iv(data,iv):
 
     return data_64.decode('utf-8') #return string version of base 64
 
+#Dencrypt AES 128 with data and iv passed as string and result as string
 def decrypt_aes_string_pass_iv(ciphertext,iv):
 
     iv_64_bytes = iv.encode('ascii') #from string to base 64 bytes
@@ -140,12 +146,14 @@ def decrypt_aes_string_pass_iv(ciphertext,iv):
     return plain_string
 
 #Extract the iv from the base64 string and return the bytes
+#Was used when iv was prepended
 def extract_iv_bytes(ciphertext):
     iv = ciphertext[:NUM_CHARS]
     iv_64_bytes = iv.encode('ascii')
     iv_bytes = base64.b64decode(iv_64_bytes)
     return iv_bytes
 
+#Was used when iv was prepended
 def extract_iv_string(ciphertext):
     iv = ciphertext[:NUM_CHARS]
     return iv

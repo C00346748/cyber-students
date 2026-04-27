@@ -7,7 +7,6 @@ class RegistrationHandler(BaseHandler):
     async def post(self):
         try:
             body = json_decode(self.request.body)
-            #Removed the strip and smalls because it doesn't work with encypted text
             email = body['email']
             email_enc = body['email_enc']
             iv_email = body['iv_email']
