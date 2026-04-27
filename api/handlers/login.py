@@ -33,7 +33,7 @@ class LoginHandler(BaseHandler):
         try:
             body = json_decode(self.request.body)
             #Remove strip no good with hashes
-            email = body['email']
+            email = body['email'].lower().strip()
             password = body['password']
             #print(f"####xxxx Body email login is {body['email']}")
         except Exception:
