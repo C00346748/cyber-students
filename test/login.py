@@ -49,7 +49,6 @@ class LoginHandlerTest(BaseTest):
           'email': self.email,
           'password': self.password
         }
-        print("Password at client: ",body['password'])
         response = self.fetch('/login', method='POST', body=dumps(body))
         self.assertEqual(200, response.code)
 

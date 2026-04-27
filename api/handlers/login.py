@@ -53,7 +53,7 @@ class LoginHandler(BaseHandler):
         }, {
           'password': 1
         })
-        print(f"*** Password at server: {password}")
+
         if user is None:
             self.send_error(403, message='The email address and password are invalid!')
             return
@@ -80,6 +80,9 @@ class LoginHandler(BaseHandler):
         }, {
           'fullname': 1 
         })
+
+        #try bypassess issue between live DB returning data nd test returning nothing
+        #Test returns nothing because it's not passing the fullname or iv_fullname
         try: 
             test = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(fullname['fullname'],fullnameiv['iv_fullname'])
         except:

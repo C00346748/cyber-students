@@ -53,6 +53,8 @@ async def cli_login():
         print(body['message'])
     except:
         print("Error with login")
+        return False
+    return True
 
 async def welcome():
     http_client = AsyncHTTPClient()
