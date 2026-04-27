@@ -16,7 +16,8 @@ db = MotorClient(**MONGODB_HOST)[MONGODB_DBNAME]
 #Retrieve all data for the user email from DB
 async def view_my_data():    
     tracemalloc.start()
-    email=crypto_helper.simple_hash('luke@luke.com')
+    email=input("Confirm your e-mail address to continue: ")
+    email=crypto_helper.simple_hash(email)
     print("Data registered under your account: ")
 
     user_data = await db.users.find_one(

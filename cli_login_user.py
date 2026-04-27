@@ -26,12 +26,10 @@ async def cli_login():
             'salt': 1
         })
         salt = user_salt['salt']
-        print("Salt " + salt)
     except:
         pass #Don't want to give a clue that username is wrong
     try: #Separate try to avoid all the server error messages showing giving error details
         unsalt_pwd = crypto_helper.season(crypto_helper.add_pepper(pwinput.pwinput('Enter your password: ')),salt)
-        print("Unsalted pwd " + unsalt_pwd)
         body = {
             'email': email,
             'password': unsalt_pwd
@@ -48,7 +46,7 @@ async def cli_login():
             body=dumps(body),
             headers={"Content-Type": "application/json"}
         )
-        print(f"Server response {response.code}")
+        #print(f"Server response {response.code}")
         body = json_decode(response.body)
         print(body['message'])
     except:
