@@ -25,11 +25,13 @@ class CryptoTest(unittest.TestCase):
         
         self.assertEqual(string2, dec2)
 
+    #test many different string of different lengths
     def test_many_strings_aes(self):
         #Set at 100 string test
         for i in range(1, 101):
             self.test_aes_with_iv_roundtrip()
 
+    #Test that hash of same string always produces same hash
     def test_hash_same_string(self):
         length_of_string = random.randint(1, 100)
         string1 = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_of_string))
@@ -39,6 +41,7 @@ class CryptoTest(unittest.TestCase):
         #same string same hash?
         self.assertEqual(string1_hash,string2_hash)
 
+    #Test that hash of different strings always produce different hash (no collision - shouldn't happen if coded correctly)
     def test_hash_different_string(self):
         length_of_string = random.randint(1, 100)
         string1 = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_of_string))
