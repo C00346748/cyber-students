@@ -15,13 +15,10 @@ class CryptoTest(unittest.TestCase):
         string2 = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length_of_string))
         iv_bytes = crypto_helper.gen_16_iv()
         iv_string = crypto_helper.get_iv_string(iv_bytes)
-        print(iv_string)
         enc2 = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(string2,iv_string)
         #enc2_64=base64.b64encode(enc2)
-        print("Enc: " + enc2)
         #enc2=base64.b64decode(enc2_64)
         dec2 = aes_encrypt_decrypt.decrypt_aes_string_pass_iv(enc2,iv_string)
-        print("Dec: " + dec2)
         
         self.assertEqual(string2, dec2)
 
