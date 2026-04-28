@@ -25,7 +25,8 @@ class CryptoTest(unittest.TestCase):
         
         self.assertEqual(string2, dec2)
 
-    def test_hundred_strings_aes(self):
+    def test_many_strings_aes(self):
+        #Set at 100 string test
         for i in range(1, 101):
             self.test_aes_with_iv_roundtrip()
 
@@ -45,5 +46,4 @@ class CryptoTest(unittest.TestCase):
         if(string1 != string2):
             string1_hash = crypto_helper.simple_hash(string1)
             string2_hash = crypto_helper.simple_hash(string2)
-        #different string never same hash?
-        self.assertNotEqual(string1_hash,string2_hash)
+            self.assertNotEqual(string1_hash,string2_hash)
