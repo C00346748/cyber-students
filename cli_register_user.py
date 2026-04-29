@@ -90,7 +90,7 @@ async def cli_registration():
     iv_phone_number = crypto_helper.get_iv_string(iv_phone_number_bytes)
     phone_number = aes_encrypt_decrypt.encrypt_aes_string_pass_iv(phone_number_in,iv_phone_number)
 
-    explicit_consent = input('Do you consent to providing personal health information Y\\N: ')
+    explicit_consent = input('For the purpose of assessing supports, do you consent to providing personal health information Y\\N: ')
     if(explicit_consent == 'Y' or explicit_consent == 'y'):
         list_disabilities_in = input('Enter your list of disabilities: ')
         iv_list_disabilities_bytes = crypto_helper.gen_16_iv()
