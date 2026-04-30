@@ -6,6 +6,7 @@ from .base import BaseTest
 import base64
 import random
 import string
+from uuid import uuid4
 
 class CryptoTest(unittest.TestCase):
     
@@ -47,3 +48,43 @@ class CryptoTest(unittest.TestCase):
             string1_hash = crypto_helper.simple_hash(string1)
             string2_hash = crypto_helper.simple_hash(string2)
             self.assertNotEqual(string1_hash,string2_hash)
+
+    #Hashes would likely not match if there was an issue with the implementation
+    def test_hash_token(self):
+        #generate token
+        token_uuid = uuid4().hex
+        #same non-hashed value
+        token2 = token_uuid
+        #hash token with salt and pepper
+        token_list = crypto_helper.add_salt(crypto_helper.add_pepper(token_uuid))
+        token_uuid = token_list[0]
+        #hash second token
+        token_list2 = crypto_helper.add_salt(crypto_helper.add_pepper(token_uuid))
+        token_uuid2 = token_list2[0]
+        #values should be equal
+        self.assertNotEqual(token_uuid,token_uuid2)
+
+    #test many hashes of tokens
+    def test_hash_multiple(self):
+        #Takes a while to execute 100, so staying with 50
+        for i in range (1, 50):
+            self.test_hash_token()
+
+    #if these are ever not equal then there is something wrong with the implmentation
+    def test_hash_password(self):
+        password1 = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
+        password2 = password1
+        #hash the password with salt and pepper
+        password1_hash = crypto_helper.add_salt(crypto_helper.add_pepper(password1))
+        password1_hash = password1_hash[0]
+        #hash the same second password
+        password2_hash = crypto_helper.add_salt(crypto_helper.add_pepper(password2))
+        password2_hash = password2_hash[0]
+        #values should always be equal
+        self.assertNotEqual(password1_hash,password2_hash)
+
+    #test many hashes of passwords
+    def test_hash_multiple_password(self):
+        #Takes a while to execute 100, so staying with 50
+        for i in range (1, 50):
+            self.test_hash_password()
